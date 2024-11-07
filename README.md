@@ -4,12 +4,13 @@ sudo apt-get install php-sqlite3
 
 
 composer install
-
+php artisan key:generate
 php artisan migrate
 
 npm install vite --save-dev
-npm run build
+npm run dev
 
 
 php artisan serve
-npm run dev
+
+npm run build
