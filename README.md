@@ -7,6 +7,9 @@ composer install
 
 php artisan migrate
 
-php artisan serve
 npm install vite --save-dev
+npm run build
+
+
+php artisan serve
 npm run dev
