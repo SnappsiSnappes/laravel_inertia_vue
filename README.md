@@ -2,6 +2,8 @@
 поменять env на .env
 sudo apt-get install php-sqlite3
 
+./vendor/bin/sail artisan storage:link
+
 
 composer install
 php artisan key:generate
