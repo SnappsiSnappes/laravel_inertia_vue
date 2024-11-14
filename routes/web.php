@@ -34,13 +34,13 @@ Route::get('/', function (Request $request) {
     return Inertia('Home', [
         'users' => User::when($request->search, function ($query) use ($request) {
             $query->where('name', 'like', '%' . $request->search . '%');
-        })->paginate(5)->withQueryString(),
+        })->paginate(9)->withQueryString(),
 
-        'searchTerm'=>$request->search,
-        'can'=>[
-            'delete_user'=>Auth::user() 
-                    ? Auth::user()->can('delete',User::class)
-                    : null
+        'searchTerm' => $request->search,
+        'can' => [
+            'delete_user' => Auth::user()
+                ? Auth::user()->can('delete', User::class)
+                : null
         ]
     ]);
 })->name('home');
@@ -49,4 +49,4 @@ Route::get('/', function (Request $request) {
 Route::inertia('/about', 'About')->name('about');
 
 // here
-Route::post('/delete_user',[AuthController::class, 'delete_user'])->name('delete_user');
+Route::post('/delete_user', [AuthController::class, 'delete_user'])->name('delete_user');
