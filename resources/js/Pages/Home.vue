@@ -113,7 +113,7 @@ watch(
                             :src="
                                 user.avatar
                                     ? 'storage/' + user.avatar
-                                    : 'storage/avatars/upload_preview.svg'
+                                    : 'storage/avatars/upload_preview.png'
                             "
                             alt="avatar"
                         />
