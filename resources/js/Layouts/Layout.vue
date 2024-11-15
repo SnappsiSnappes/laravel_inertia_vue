@@ -1,5 +1,5 @@
 <script>
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 export default {
     props: {
@@ -9,7 +9,7 @@ export default {
         const user = ref(props.auth?.user);
 
         const avatarSrc = computed(() => {
-            return user.value?.avatar ? `storage/${user.value.avatar}` : 'storage/avatars/upload_preview.svg';
+            return user.value?.avatar ? `storage/${user.value.avatar}` : 'storage/avatars/upload_preview.png';
         });
 
         let stopWatcher;
@@ -20,9 +20,6 @@ export default {
                 }
             });
         }
-
-
-
 
         return {
             avatarSrc
