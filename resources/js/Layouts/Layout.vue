@@ -44,9 +44,21 @@ export default {
                     <!--#!! home -->
                     <Link class="nav-link" :href="route('home')"
                         :class="{ ' bg-slate-500 font-semibold ': $page.component === 'Home' }">Home</Link>
+
+
                     <!--#!! about -->
                     <Link class="nav-link"  :href="route('about')"
                         :class="{ ' bg-slate-500 font-semibold ': $page.component === 'About' }">About</Link>
+
+                    <!--#!! posts -->
+                    <Link class="nav-link"  :href="route('posts.index')"
+                        :class="{ ' bg-slate-500 font-semibold ': $page.component === 'Posts/Posts' }">Posts</Link>
+
+                    <!--#!! all_users -->
+                    <Link class="nav-link"  :href="route('all_users')"
+                        :class="{ ' bg-slate-500 font-semibold ': $page.component === 'AllUsers' }">All users</Link>
+
+
                 </div>
 
                 <div v-if="!$page.props.auth.user" class="flex gap-5">

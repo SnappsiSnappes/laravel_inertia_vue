@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
+
 
 class PostController extends Controller
 {
@@ -13,7 +17,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index');
+        return inertia('Posts/Posts');
+
     }
 
     /**

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 // posts routes
 Route::resource('posts',PostController::class);
 
+
 // guests
 Route::middleware('guest')->group(function () {
 
@@ -55,25 +56,13 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
-Route::get('/', function (Request $request) {
-
-    // todoo move this in to a controller
-    return Inertia('Home', [
-        'users' => User::when($request->search, function ($query) use ($request) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        })->paginate(9)->withQueryString(),
-
-        'searchTerm' => $request->search,
-        'can' => [
-            'delete_user' => Auth::user()
-                ? Auth::user()->can('delete', User::class)
-                : null
-        ]
-    ]);
-})->name('home');
+// home
+Route::inertia('/', 'Home')->name('home');
 
 
 // about
 Route::inertia('/about', 'About')->name('about');
+
+// all_users
+Route::get('/all_users', [AuthController::class,'showAllUsers'])->name('all_users');
 

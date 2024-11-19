@@ -60,7 +60,7 @@ class AuthController extends Controller
             'name' => ['required', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . Auth::id()],
             'password' => ['nullable', 'confirmed'],
-            'deleteAvatarNow' => ['nullable','boolean']
+            'deleteAvatarNow' => ['nullable', 'boolean']
         ]);
         // Get the authenticated user
         $user = Auth::user();
@@ -75,9 +75,9 @@ class AuthController extends Controller
             // Store the new avatar
             $fields['avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
             $user->avatar = $fields['avatar'];
-        } 
-        
-        if($fields['deleteAvatarNow']) {
+        }
+
+        if ($fields['deleteAvatarNow']) {
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
@@ -96,7 +96,6 @@ class AuthController extends Controller
 
         return Response('', 200);
     }
-
 
     public function logout(Request $request)
     {
@@ -124,5 +123,26 @@ class AuthController extends Controller
         // Delete the user
         $user->delete();
         return redirect()->route('home')->with('message', 'Account deleted successfuly!');
+    }
+
+    public function showAllUsers(Request $request)
+    {
+        return Inertia('AllUsers', [
+            'users' => User::when(
+
+                $request->search,
+
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                }
+            )->paginate(9)->withQueryString(),
+
+            'searchTerm' => $request->search,
+            'can' => [
+                'delete_user' => Auth::user()
+                    ? Auth::user()->can('delete', User::class)
+                    : null
+            ]
+        ]);
     }
 }
