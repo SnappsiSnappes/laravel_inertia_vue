@@ -67,7 +67,7 @@ watch(
 
     <div>
         <!-- search -->
-        <div class="flex justify-end mb-4">
+        <div class="flex justify-start mb-4">
             <div class="w-1/4-">
                 <input
                     type="search"

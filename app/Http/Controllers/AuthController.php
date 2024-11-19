@@ -60,12 +60,14 @@ class AuthController extends Controller
             'name' => ['required', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . Auth::id()],
             'password' => ['nullable', 'confirmed'],
+            'deleteAvatarNow' => ['nullable','boolean']
         ]);
         // Get the authenticated user
         $user = Auth::user();
 
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
+
             // Delete the old avatar if it exists
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
@@ -73,7 +75,9 @@ class AuthController extends Controller
             // Store the new avatar
             $fields['avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
             $user->avatar = $fields['avatar'];
-        } else {
+        } 
+        
+        if($fields['deleteAvatarNow']) {
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }

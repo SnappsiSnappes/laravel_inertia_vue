@@ -9,6 +9,7 @@ export default {
         const user = ref(props.auth?.user);
 
 
+        /* watch for user changes and get user properties */
         watch(
             () => props.auth.user,
             (newUser) => {
@@ -17,6 +18,7 @@ export default {
             { immediate: true }
         )
 
+        /* look for avatar and place it , place default if there is no one */
         const avatarSrc = computed(() => {
             if (user.value && user.value.avatar) {
                 return `storage/${user.value.avatar}`;
@@ -24,16 +26,6 @@ export default {
             return 'storage/avatars/upload_preview.png'
         });
 
-
-
-        // let avatarWatcher;
-        // if (user.value) {
-        //     avatarWatcher = watch(() => props.auth.user?.avatar, (newAvatar) => {
-        //         if (user.value) {
-        //             user.value.avatar = newAvatar;
-        //         }
-        //     });
-        // }
 
         return {
             avatarSrc

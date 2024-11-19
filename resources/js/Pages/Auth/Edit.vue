@@ -10,7 +10,8 @@ const editForm = useForm({
   password: null,
   password_confirmation: null,
   avatar: null,
-  preview: null
+  preview: null,
+  deleteAvatarNow: null,
 })
 
 const deleteForm = useForm({
@@ -79,11 +80,17 @@ onMounted(() => {
     <form @submit.prevent="editFormSubmit">
       <div class="grid place-items-center">
         <div class="relative w-28 h-28 rounded-full overflow-hidden border border-slate-300">
+
+          <!--#!! avatar label -->
           <label for="avatar" class="absolute inset-0 grid content-end cursor-pointer">
             <span class="bg-white/70 text-center">Avatar</span>
           </label>
+
+          <!--#!! avatar input file -->
           <input type="file" id="avatar" @input="addFile" hidden>
           <img v-if="editForm.preview" :src="editForm.preview" class="object-cover w-28 h-28">
+
+
           <div v-else class="flex justify-center items-center h-full">
             <svg class="cursor-pointer" xmlns="http://www.w3.org/2000/svg" height="66px" viewBox="0 0 24 24"
               width="66px" fill="#000000">
@@ -94,9 +101,18 @@ onMounted(() => {
                 d="M21 6h-3.17L16 4H9v2h6.12l1.83 2H21v12H5V10H3v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM8 14c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5-5 2.24-5 5zm5-3c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3zM5 9V6h3V4H5V1H3v3H0v2h3v3z" />
             </svg>
           </div>
+
+
+
+
         </div>
         <p>Upload avatar</p>
         <p class="error mt-2">{{ editForm.errors.avatar }}</p>
+
+        <!--#!! delete avatar btn -->
+        <label for="deleteAvatarNow">Delete avatar</label>
+        <input id="deleteAvatarNow" type="checkbox" name="deleteAvatarNow" v-model="editForm.deleteAvatarNow">
+
       </div>
 
       <TextInput name="name" v-model="editForm.name" :message="editForm.errors.name" />
@@ -118,6 +134,8 @@ onMounted(() => {
         <button class="primary-btn" :disabled="editForm.processing">
           Update profile
         </button>
+
+
       </div>
     </form>
   </div>
