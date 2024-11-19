@@ -69,9 +69,9 @@ export default {
                 <div v-else class="gap-3 flex ">
 
                     <!-- #!!edit -->
-                    <Link :href="route('edit')">
-                    <img class="avatar cursor-pointer" :src="avatarSrc">
-                    <div>Edit profile</div>
+                    <img class="avatar" :src="avatarSrc">
+                    <Link class="nav-link" :class="{'bg-slate-500 font-semibold':$page.component === 'Auth/Edit'}" :href="route('edit')">
+                    Edit profile
                     </Link>
 
                     <!-- #!!dashboard -->
