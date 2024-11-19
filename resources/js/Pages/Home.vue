@@ -58,6 +58,13 @@ watch(
 <template>
     <Head :title="`${$page.component}`" />
 
+    <!-- flash message -->
+    <p v-if="$page.props.flash.message" class="p-4 bg-green-200">
+        {{ $page.props.flash.message }}
+    </p>
+    
+
+
     <div>
         <!-- search -->
         <div class="flex justify-end mb-4">

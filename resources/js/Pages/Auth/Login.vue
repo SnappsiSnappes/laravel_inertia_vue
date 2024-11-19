@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { useForm,router } from '@inertiajs/vue3'
 import TextInput from '../Components/TextInput.vue'
 
 const form = useForm({
@@ -13,7 +13,7 @@ const submit = () => {
     form.post( '#', {
         preserveScroll: true,
         onSuccess:()=>{
-            console.log('suscces')
+            router.visit(route('home'), { replace: true, preserveState: false }); // preserveState: false - making page to reload
         },
         onError: () => {
             form.reset('password',)

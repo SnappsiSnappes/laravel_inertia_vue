@@ -119,6 +119,6 @@ class AuthController extends Controller
 
         // Delete the user
         $user->delete();
-        return Response('ok', 200);
+        return redirect()->route('home')->with('message', 'Account deleted successfuly!');
     }
 }
