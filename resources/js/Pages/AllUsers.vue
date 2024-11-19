@@ -59,7 +59,7 @@ watch(
 <template>
     <Head :title="`${$page.component}`" />
 
-    <!-- flash message -->
+        <!-- flash message -->
     <p v-if="$page.props.flash.message" class="p-4 bg-green-200">
         {{ $page.props.flash.message }}
     </p>
@@ -78,7 +78,7 @@ watch(
                 />
             </div>
 
-            <!-- spinner -->
+        <!-- spinner -->
             <div id="spinner" class="text-center"  v-show="spinnerFlag">
                 <div role="status">
                     <svg
@@ -113,7 +113,8 @@ watch(
                 </tr>
             </thead>
             <tbody>
-                <!-- v-for -->
+                
+        <!-- v-for -->
                 <tr v-for="user in users.data" :key="user.id">
                     <td>
                         <img
