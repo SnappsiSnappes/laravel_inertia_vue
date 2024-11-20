@@ -10,10 +10,10 @@ const form = useForm({
 
 const submit = () => {
     console.log(form)
-    form.post( '#', {
+    form.post( route('login_post'), {
         preserveScroll: true,
         onSuccess:()=>{
-            router.visit(route('home'), { replace: true, preserveState: false }); // preserveState: false - making page to reload
+            // controller does redirect here to dashboard
         },
         onError: () => {
             form.reset('password',)

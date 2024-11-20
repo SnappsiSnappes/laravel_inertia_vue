@@ -130,6 +130,7 @@ watch(
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ getDate(user.created_at) }}</td>
+        <!-- v-if can.delete_user -->
                     <td v-if="can.delete_user">
                         <button
                             @click="deleteUser(user)"

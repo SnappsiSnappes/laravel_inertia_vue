@@ -62,6 +62,7 @@ class AuthController extends Controller
             'password' => ['nullable', 'confirmed'],
             'deleteAvatarNow' => ['nullable', 'boolean']
         ]);
+
         // Get the authenticated user
         $user = Auth::user();
 
@@ -77,17 +78,21 @@ class AuthController extends Controller
             $user->avatar = $fields['avatar'];
         }
 
+        // delete avatar now
         if ($fields['deleteAvatarNow']) {
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $user->avatar = $fields['avatar'];
+            $user->avatar = null;
         }
 
 
         // Manually update user profile
         $user->name = $fields['name'];
         $user->email = $fields['email'];
+
+
+        // ecrypt password and save
         if (!empty($fields['password'])) {
             $user->password = bcrypt($fields['password']);
         }
@@ -127,22 +132,24 @@ class AuthController extends Controller
 
     public function showAllUsers(Request $request)
     {
+        // Fetch users with optional search term
+        $users = User::when($request->search, function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        })->paginate(9)->withQueryString();
+    
+        
+        // Determine if the current user can delete other users
+        $canDeleteUser = null;
+        if (Auth::user()) {
+            $canDeleteUser = Auth::user()->can('delete', User::class);
+        }
+    
         return Inertia('AllUsers', [
-            'users' => User::when(
-
-                $request->search,
-
-                function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%');
-                }
-            )->paginate(9)->withQueryString(),
-
+            'users' => $users,
             'searchTerm' => $request->search,
             'can' => [
-                'delete_user' => Auth::user()
-                    ? Auth::user()->can('delete', User::class)
-                    : null
+                'delete_user' => $canDeleteUser,
             ]
         ]);
     }
-}
+    }

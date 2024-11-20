@@ -8,13 +8,12 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
-// posts routes
+// posts resource
 Route::resource('posts',PostController::class);
 
 
 // guests
 Route::middleware('guest')->group(function () {
-
 
     // Register and login routes for guests
     Route::inertia('/register', 'Auth/Register')->name('register');
@@ -48,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/delete_user', [AuthController::class, 'delete_user'])->name('delete_user');
     
     
-    // method for get user info, used in /edit
+    //api json method for get user info, used in /edit
     Route::get('/user', function (Request $request) {
         return $request->user()->only('id', 'name', 'avatar', 'email');
     });
@@ -58,7 +57,6 @@ Route::middleware('auth')->group(function () {
 
 // home
 Route::inertia('/', 'Home')->name('home');
-
 
 // about
 Route::inertia('/about', 'About')->name('about');

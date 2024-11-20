@@ -17,7 +17,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        return inertia('Posts/Posts');
+        
+        $posts = Post::all();
+        return inertia('Posts/Posts',['posts'=>$posts]);
 
     }
 
