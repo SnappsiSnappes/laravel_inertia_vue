@@ -1,5 +1,7 @@
 <script setup>
-
+const props = defineProps({
+    posts: Object,
+})
 
 </script>
 
@@ -14,7 +16,18 @@
         </p>
     </div>
 
+    <div v-for="post in posts">
+        <div>
+            <div class="text-center font-bold py-4"> {{ post.title }} </div>
+            <p>{{ post.short_body }}</p>
+            <div class="">
+                <i>post by user: {{ post.user.name }} <br> created at {{ post.humanReadableDate }}</i>
+            </div>
+        </div>
 
+        <hr style=" height:2px; background-color:gray; border:none;">
+
+    </div>
 
     <div>
         posts

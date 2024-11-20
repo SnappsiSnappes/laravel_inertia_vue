@@ -21,7 +21,9 @@ const props = defineProps({
 });
 
 const deleteUser = (user) => {
-    console.log(user.id);
+    if(!confirm('Are you sure? This action cannot be unchange later.')){
+        return;
+    }
     axios.post(route("delete_user"), { id: user.id }).then((response) => {
         console.log(response);
         router.reload({ only: ["users"] });
