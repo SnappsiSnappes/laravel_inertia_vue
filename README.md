@@ -13,7 +13,6 @@
 ## Перед запуском создаем бд в mysql докера.
 - ./vendor/bin/sail mysql -u root -p
 ###  Сюда вводим:
-- use sail;
 - CREATE DATABASE sail; // название дб из .env файла
 
 ## Наконец.
