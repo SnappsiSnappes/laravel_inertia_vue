@@ -11,7 +11,8 @@
 - ./vendor/bin/sail php artisan key:generate
 
 ## Перед запуском создаем бд в mysql докера.
-- ./vendor/bin/sail mysql -u root -p
+- ./vendor/bin/sail up -d // запускаем контейнеры
+- ./vendor/bin/sail mysql -u root -p // логинимся в бд
 ###  Сюда вводим:
 - CREATE DATABASE sail; // название дб из .env файла
 
