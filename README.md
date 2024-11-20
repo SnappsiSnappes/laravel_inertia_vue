@@ -1,18 +1,21 @@
+
+
+## Первоначальная настройка.
+- поменять env на .env
+
+- ./vendor/bin/sail composer install
+- ./vendor/bin/sail npm i
+- ./vendor/bin/sail artisan storage:link
+- ./vendor/bin/sail php artisan key:generate
+- ./vendor/bin/sail php artisan migrate
+
+Перед запуском создаем бд в mysql докера.
+- ./vendor/bin/sail mysql -u root -p 
+
+Сюда вводим:
+- use sail;
+- CREATE DATABASE sail; // название дб из .env файла
+
 Запуск:
-поменять env на .env
-sudo apt-get install php-sqlite3
-
-./vendor/bin/sail artisan storage:link
-
-
-composer install
-php artisan key:generate
-php artisan migrate
-
-npm install vite --save-dev
-npm run dev
-
-
-php artisan serve
-
-npm run build
+- ./vendor/bin/sail npm run dev
+- ./vendor/bin/sail php artisan serve
