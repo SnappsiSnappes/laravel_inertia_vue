@@ -1,8 +1,10 @@
 <script setup>
+import PaginationLinks from "./../Components/PaginationLinks.vue";
+
 const props = defineProps({
     posts: Object,
 })
-
+console.log(props);
 </script>
 
 <template>
@@ -16,12 +18,12 @@ const props = defineProps({
         </p>
     </div>
 
-    <div v-for="post in posts">
+    <div v-for="post in posts.data" :key="post.id">
         <div>
             <div class="text-center font-bold py-4"> {{ post.title }} </div>
             <p>{{ post.short_body }}</p>
             <div class="">
-                <i>post by user: {{ post.user.name }} <br> created at {{ post.humanReadableDate }}</i>
+                <i>post by user : {{ post.user.name }} <br> created at {{ post.humanReadableDate }}</i>
             </div>
         </div>
 
@@ -30,7 +32,7 @@ const props = defineProps({
     </div>
 
     <div>
-        posts
+        <PaginationLinks :paginator="posts" />
     </div>
 
     <div>

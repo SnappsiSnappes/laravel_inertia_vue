@@ -20,7 +20,8 @@ class PostController extends Controller
      
      public function index()
      {
-         $posts = Post::with('user')->orderBy('created_at','desc' )->get();
+         $posts = Post::with('user')->latest()->paginate(5);
+
          
          // Format dates using Carbon and add human-readable date
          $posts->each(function ($post) {
