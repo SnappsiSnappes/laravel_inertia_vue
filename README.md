@@ -10,8 +10,9 @@
 - composer install
 - npm install
 - php artisan key:generate
+- php artisan storage:link
 - php artisan sail:install
-- ./vendor/bin/sail artisan storage:link
+- поменять порты в docker-compose.yml (опционально)
 
 ## Перед запуском создаем бд в mysql докера.
 - ./vendor/bin/sail up -d // запускаем контейнеры
