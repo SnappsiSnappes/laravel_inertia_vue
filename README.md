@@ -5,8 +5,8 @@
 ## Первоначальная настройка.
 - поменять env на .env
 
-- ./vendor/bin/sail composer install
-- ./vendor/bin/sail npm i
+composer install
+npm i
 - ./vendor/bin/sail artisan storage:link
 - ./vendor/bin/sail php artisan key:generate
 
