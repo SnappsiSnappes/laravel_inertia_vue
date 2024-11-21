@@ -9,9 +9,9 @@
 
 - composer install
 - npm install
+- php artisan key:generate
 - php artisan sail:install
 - ./vendor/bin/sail artisan storage:link
-- ./vendor/bin/sail php artisan key:generate
 
 ## Перед запуском создаем бд в mysql докера.
 - ./vendor/bin/sail up -d // запускаем контейнеры
