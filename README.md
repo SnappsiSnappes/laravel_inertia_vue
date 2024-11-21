@@ -6,6 +6,7 @@
 - поменять env на .env
 
 composer install
+npm init
 npm i
 - ./vendor/bin/sail artisan storage:link
 - ./vendor/bin/sail php artisan key:generate
