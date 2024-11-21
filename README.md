@@ -1,13 +1,14 @@
 ## Системные требования.
 - docker
 - docker-compose
+- composer
+- npm
 
 ## Первоначальная настройка.
 - поменять env на .env
 
-composer install
-npm init
-npm i
+- composer install
+- npm install
 - ./vendor/bin/sail artisan storage:link
 - ./vendor/bin/sail php artisan key:generate
 
