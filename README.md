@@ -9,6 +9,7 @@
 
 - composer install
 - npm install
+- php artisan sail:install
 - ./vendor/bin/sail artisan storage:link
 - ./vendor/bin/sail php artisan key:generate
 
