@@ -8,4 +8,5 @@
         {{ $page.props.flash.message }}
     </p>
     <h1 class="title">Welcome back {{ $page.props.auth.user.name }}</h1>
+    <img src="/storage/app/public/dashboard.jpg" alt="asd">
 </template>
