@@ -24,7 +24,7 @@ const editFormSubmit = () => {
     preserveScroll: true,
     onSuccess: (res) => {
       console.log(res)
-      router.visit(route('home'), { replace: true, preserveState: false }); // preserveState: false - making page to reload
+      // router.visit(route('home'), { replace: true, preserveState: false }); // preserveState: false - making page to reload
     },
     onError: () => {
       editForm.reset('password', 'password_confirmation')
@@ -74,7 +74,13 @@ onMounted(() => {
 <template>
 
   <Head :title="`${$page.component}`" />
-  <div class="w-2/4 mx-auto">
+  <div class="w-1/4 mx-auto">
+
+    <!-- flash message -->
+    <p v-if="$page.props.flash.message" class="text-center p-4 bg-green-200">
+        {{ $page.props.flash.message }}
+    </p>
+
     <h1 class="text-center my-4">Update this account 🤖⬇</h1>
 
     <form @submit.prevent="editFormSubmit">

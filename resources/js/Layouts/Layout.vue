@@ -83,7 +83,7 @@ export default {
             </nav>
         </header>
 
-        <main>
+        <main class="">
             <slot />
         </main>
     </div>

@@ -99,7 +99,7 @@ class AuthController extends Controller
 
         $user->save();
 
-        return Response('', 200);
+        return redirect()->route('edit')->with('message', 'Account updated successfuly!');
     }
 
     public function logout(Request $request)
