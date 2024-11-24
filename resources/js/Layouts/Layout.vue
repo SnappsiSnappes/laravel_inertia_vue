@@ -72,6 +72,11 @@ export default {
 
                 <div v-else class="gap-3 flex ">
 
+                    <!-- #!! name of user -->
+                    <span class="text-slate-200 rounded-md px-3 py-2 text-sm font-medium">
+                        {{ $page.props.auth.user.name }}
+                    </span>
+
                     <!-- #!!edit -->
                     <img class="avatar" :src="avatarSrc">
                     <Link class="nav-link" :class="{'bg-slate-500 font-semibold':$page.component === 'Auth/Edit'}" :href="route('edit')">
@@ -81,9 +86,7 @@ export default {
                     <!-- #!!dashboard -->
                     <Link class="nav-link" :href="route('dashboard')"
                         :class="{ ' bg-slate-500 font-semibold ': $page.component === 'Dashboard' }">Dashboard </Link>
-                    <span class="nav-link">
-                        {{ $page.props.auth.user.name }}
-                    </span>
+
                     <!-- #!!logout -->
                     <Link class="nav-link" :href="route('logout')" method="post" as="button" type="button">Logout
                     </Link>
