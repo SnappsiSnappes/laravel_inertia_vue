@@ -25,4 +25,3 @@
 
 ## Запуск:
 - ./vendor/bin/sail npm run dev
-- ./vendor/bin/sail php artisan serve
