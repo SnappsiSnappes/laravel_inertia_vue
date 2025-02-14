@@ -17,7 +17,11 @@ composer install
 npm install
 php artisan key:generate
 php artisan storage:link
-npm run dev
+php artisan migrate
+php artisan serve
+
+// на втором терминале
+>>> npm run dev
 ```
 
 ***
