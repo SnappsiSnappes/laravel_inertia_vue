@@ -16,6 +16,9 @@ mv env .env
 composer install
 npm install
 php artisan key:generate
+rm public/storage
+php artisan storage:link
+mkdir -p storage/app/public
 php artisan storage:link
 php artisan migrate
 php artisan serve
@@ -23,6 +26,8 @@ php artisan serve
 // на втором терминале
 >>> npm run dev
 ```
+
+
 
 ***
 
