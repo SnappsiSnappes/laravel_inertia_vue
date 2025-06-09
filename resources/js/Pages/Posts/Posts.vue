@@ -1,66 +1,65 @@
 <script setup>
-import PaginationLinks from "./../Components/PaginationLinks.vue";
+import { Head } from '@inertiajs/vue3'
 
 const props = defineProps({
     posts: Object,
 })
-console.log(props);
 </script>
 
 <template>
-    <!-- head  -->
     <Head :title="`${$page.component}`" />
+    <div class="w-2/4 mx-auto">
+        <h1>All Posts</h1>
 
+        <div v-for="post in posts.data" :key="post.id" class="mb-4 border-b pb-2">
+            <h2 class="text-lg font-bold">{{ post.title }}</h2>
+            <p>{{ post.short_body }}...</p>
+            <p class="text-sm text-gray-500">{{ post.humanReadableDate }}</p>
 
-    <!-- container -->
-    <div class="flex min-h-screen">
-
-        <!-- #!! flash message -->
-        <div v-if="$page.props.flash.message">
-            <p class="p-4 bg-green-200">
-                {{ $page.props.flash.message }}
-            </p>
-        </div>
-
-
-        <!-- sidebar -->
-        <div class="w-1/7 bg-gray-800 text-white p-4 space-y-4">
-            <div class="p-1 border-2 mt-6 ">
-                <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">Create post</a>
-            </div>
-            <div>
-                <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">My posts</a>
-                <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">Explore</a>
+            <div class="flex gap-2 mt-2">
+                <a :href="route('posts.show', post.id)" class="text-blue-500">View</a>
+                <a :href="route('posts.edit', post.id)" class="text-green-500">Edit</a>
+                <form @submit.prevent="deletePost(post.id)">
+                    <button type="submit" class="text-red-500">Delete</button>
+                </form>
             </div>
         </div>
 
-        <!-- content -->
-        <div class="flex-1 p-4 bg-gray-100">
-            <div v-for="post in posts.data" :key="post.id" class="mb-4">
-                <div class="bg-white p-4 rounded shadow">
-                    <div class="text-center font-bold py-4">{{ post.title }}</div>
-                    <div class="text-gray-600">
-                        <i>Post by user: {{ post.user.name }} <br> Created at: {{ post.humanReadableDate }}</i>
-                    </div>
-                    <p>{{ post.short_body }}</p>
-                </div>
-                <hr class="my-4">
-            </div>
+        <div class="mt-4">
+            <a :href="route('posts.create')" class="primary-btn">Create New Post</a>
+        </div>
 
-            <div>
-                <PaginationLinks :paginator="posts" />
-            </div>
-
-            <div>
-                {{ $page.props.city }}
-            </div>
-
-
+        <!-- Pagination -->
+        <div v-if="posts.links.length > 3" class="mt-4">
+            <Link
+                v-for="(link, key) in posts.links"
+                :key="key"
+                :href="link.url"
+                v-html="link.label"
+                class="px-2 py-1 rounded"
+                :class="{ 'bg-blue-500 text-white': link.active }"
+            />
         </div>
     </div>
-
-
-
-
-
 </template>
+
+<script>
+import { router } from '@inertiajs/vue3'
+
+export default {
+    methods: {
+        deletePost(id) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                router.delete(route('posts.destroy', id), {
+                    onSuccess: () => {
+                        console.log('Post deleted successfully')
+                    },
+                    onError: () => {
+                        console.error('Error deleting post')
+                    }
+                })
+            }
+        }
+    }
+}
+</script>

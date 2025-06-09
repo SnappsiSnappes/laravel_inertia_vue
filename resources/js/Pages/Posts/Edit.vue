@@ -2,17 +2,23 @@
 import { useForm } from '@inertiajs/vue3'
 import TextInput from '../Components/TextInput.vue'
 
+const props = defineProps({
+    post: Object,
+})
+
 const form = useForm({
-    title: null,
-    body: null,
+    title: props.post.title,
+    body: props.post.body,
 })
 
 const submit = () => {
-    console.log('Form data:', form) // Отладка: вывод данных формы
-    form.post(route('posts.store'), {
+    form.put(route('posts.update', props.post.id), {
         preserveScroll: true,
-        onError: (errors) => {
-            console.error('Errors:', errors) // Отладка: вывод ошибок
+        onSuccess: () => {
+            console.log('Post updated successfully')
+        },
+        onError: () => {
+            console.error('Error updating post')
         }
     })
 }
@@ -21,7 +27,7 @@ const submit = () => {
 <template>
     <Head :title="`${$page.component}`" />
     <div class="w-2/4 mx-auto">
-        <h1>Create a new post</h1>
+        <h1>Edit Post</h1>
 
         <form @submit.prevent="submit">
             <TextInput name="Title" v-model="form.title" :message="form.errors.title" />
@@ -30,7 +36,7 @@ const submit = () => {
 
             <div>
                 <button class="primary-btn" :disabled="form.processing">
-                    Create Post
+                    Update Post
                 </button>
             </div>
         </form>

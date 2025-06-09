@@ -6,6 +6,10 @@
     @vite('resources/js/app.js')
     @inertiaHead
     @routes
+
+    <!-- Добавьте этот метатег -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
   </head>
   <body>
     @inertia

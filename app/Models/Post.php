@@ -12,7 +12,9 @@ class Post extends Model
     use HasFactory;
     protected $fillable = [
         "title",
-        "body"
+        "body",
+        "user_id", // Добавьте user_id
+
     ];
 
 

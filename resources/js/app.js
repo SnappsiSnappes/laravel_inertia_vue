@@ -5,6 +5,14 @@ import { createInertiaApp , Head, Link} from '@inertiajs/vue3'
 import { ZiggyVue } from "../../vendor/tightenco/ziggy"
 import Layout from './Layouts/Layout.vue';
 
+// Настройка глобального CSRF-токена
+document.addEventListener('DOMContentLoaded', () => {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  if (csrfToken) {
+      window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+  }
+});
+
 createInertiaApp({
   title: (title)=> `My app ${title == '' ? '':'|'} ${title}`,
   resolve: name => {
@@ -22,7 +30,7 @@ createInertiaApp({
       .mount(el)
   },
   progress:{
-    color:"red",
+    color:"green",
     includeCSS:true,
     showSpinner:true
   },
