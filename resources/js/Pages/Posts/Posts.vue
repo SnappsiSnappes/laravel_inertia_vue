@@ -5,7 +5,10 @@ import PostContent from '../Components/PostContent.vue'
 const props = defineProps({
     posts: Object,
     authUser: Object, // Добавляем пропс для данных текущего пользователя
+    IsAdmin: Boolean
 })
+
+console.log(props.IsAdmin)
 </script>
 
 <template>
@@ -23,7 +26,7 @@ const props = defineProps({
                 <a :href="route('posts.show', post.id)" class="text-blue-500">View</a>
 
                 <!-- Проверка на авторизацию и владение постом -->
-                <template v-if="authUser && authUser.id === post.user_id">
+                <template v-if="(authUser && authUser.id === post.user_id) || IsAdmin">
                     <a :href="route('posts.edit', post.id)" class="text-blue-500">Edit</a>
                     <form @submit.prevent="deletePost(post.id)">
                         <button type="submit" class="text-red-500">Delete</button>
