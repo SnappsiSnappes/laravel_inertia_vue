@@ -19,7 +19,6 @@ const props = defineProps({
 });
 
 
-
 onMounted(() => {
     editor.value = new EditorJS({
         holder: 'editorjs',

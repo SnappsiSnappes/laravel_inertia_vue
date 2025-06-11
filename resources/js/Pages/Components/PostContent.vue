@@ -1,12 +1,17 @@
 <template>
     <div>
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
+            <!-- Параграф -->
             <div v-if="block.type === 'paragraph'" class="paragraph">
                 {{ block.data.text }}
             </div>
+
+            <!-- Заголовки -->
             <div v-else-if="block.type === 'header'" :class="`header-${block.data.level}`">
                 {{ block.data.text }}
             </div>
+
+            <!-- Списки -->
             <div v-else-if="block.type === 'list'" class="list">
                 <ul v-if="block.data.style === 'unordered'">
                     <li v-for="(item, idx) in block.data.items" :key="idx">{{ item }}</li>
@@ -15,9 +20,21 @@
                     <li v-for="(item, idx) in block.data.items" :key="idx">{{ item }}</li>
                 </ol>
             </div>
+
+            <!-- Цитаты -->
+            <blockquote v-else-if="block.type === 'quote'" class="blockquote">
+                <p>{{ block.data.text }}</p>
+                <footer v-if="block.data.caption" class="text-sm text-slate-500 mt-2">
+                    {{ block.data.caption }}
+                </footer>
+            </blockquote>
+
+            <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image">
                 <img :src="block.data.file.url" :alt="block.data.caption" />
-                <p v-if="block.data.caption">{{ block.data.caption }}</p>
+                <p v-if="block.data.caption" class="text-sm text-slate-500 mt-2 text-center">
+                    {{ block.data.caption }}
+                </p>
             </div>
         </div>
     </div>

@@ -5,6 +5,8 @@ import PostContent from '../Components/PostContent.vue'
 const props = defineProps({
     post: Object,
 })
+console.log(props.post);
+
 </script>
 
 <template>
