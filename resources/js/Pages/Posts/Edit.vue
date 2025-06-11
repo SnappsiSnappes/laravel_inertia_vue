@@ -1,121 +1,111 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
-import TextInput from '../Components/TextInput.vue'
-import EditorJS from '@editorjs/editorjs'
-import Header from '@editorjs/header' // Заголовки
-import List from '@editorjs/list' // Списки
-import Quote from '@editorjs/quote' // Цитаты
-import ImageTool from '@editorjs/image' // Изображения
-import CodeTool from '@editorjs/code' // Код
-import Table from '@editorjs/table' // Таблицы
-import Delimiter from '@editorjs/delimiter' // Разделители
-import Embed from '@editorjs/embed' // Встраиваемые элементы
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import TextInput from '../Components/TextInput.vue';
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import List from '@editorjs/list';
+import Quote from '@editorjs/quote';
+import ImageTool from '@editorjs/image';
+import CodeTool from '@editorjs/code';
+import Table from '@editorjs/table';
+import Delimiter from '@editorjs/delimiter';
+import Embed from '@editorjs/embed';
 import axios from 'axios';
-
+import paragraph from 'editorjs-paragraph-with-alignment';
 
 const props = defineProps({
     post: Object,
-})
+});
+
+
 
 onMounted(() => {
     editor.value = new EditorJS({
-        holder: 'editorjs', // ID элемента, в котором будет размещен редактор
+        holder: 'editorjs',
         tools: {
-            header: Header, // Плагин для заголовков
-            list: List, // Плагин для списков
-            quote: Quote, // Плагин для цитат
+
+            paragraph: {
+      class: paragraph,
+      inlineToolbar: true,
+
+            },
+            header: Header,
+            list: List,
+            quote: Quote,
             image: {
                 class: ImageTool,
                 config: {
                     endpoints: {
-                        byFile: '/upload-image', // URL для загрузки изображений
+                        byFile: '/upload-image',
                     },
                     additionalRequestHeaders: {
                         'X-CSRF-TOKEN': axios.defaults.headers.common['X-CSRF-TOKEN'],
                     },
                 },
-            }, // Плагин для изображений
-            code: CodeTool, // Плагин для кода
-            table: Table, // Плагин для таблиц
-            delimiter: Delimiter, // Плагин для разделителей
-            embed: Embed, // Плагин для встраиваемых элементов
+            },
+            code: CodeTool,
+            table: Table,
+            delimiter: Delimiter,
+            embed: Embed,
         },
-        data: JSON.parse(props.post.body), // Загружаем текущие данные поста
+        data: JSON.parse(props.post.body),
     });
 });
+
 onUnmounted(() => {
     if (editor.value) {
-        editor.value.destroy(); // Уничтожаем экземпляр редактора
+        editor.value.destroy();
     }
 });
 
-// Явно устанавливаем CSRF-токен
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
-// Проверяем, что токен установлен
-console.log(axios.defaults.headers.common['X-CSRF-TOKEN']);
+const editor = ref(null);
 
-
-// Создаем ссылку на экземпляр Editor.js
-const editor = ref(null)
-
-// Создаем форму с помощью useForm
 const form = useForm({
     title: props.post.title,
     body: props.post.body,
-})
-
-
-
-
+});
 
 const submit = async () => {
     try {
-        // Получаем данные из Editor.js
         const editorData = await editor.value.save();
-
-        // Обновляем поле body данными из редактора
         form.body = JSON.stringify(editorData);
 
-        console.log('Form data:', form); // Отладка: вывод данных формы
-
-        // Отправляем данные на сервер
         form.put(route('posts.update', props.post.id), {
             preserveScroll: true,
             onError: (errors) => {
-                console.error('Errors:', errors); // Отладка: вывод ошибок
+                console.error('Errors:', errors);
             },
         });
     } catch (error) {
         console.error('Error saving editor data:', error);
     }
 };
-
 </script>
 
 <template>
+
     <Head :title="`${$page.component}`" />
     <div class="w-2/4 mx-auto">
         <h1>Create a new post</h1>
 
+        <!-- Форма для заголовка -->
         <form @submit.prevent="submit">
-            <!-- Поле для заголовка -->
             <TextInput name="Title" v-model="form.title" :message="form.errors.title" />
 
-            <!-- Контейнер для Editor.js -->
-            <div id="editorjs" class="mt-4"></div>
-
-            <!-- Простое текстовое поле для отображения ошибок -->
             <div v-if="form.errors.body" class="text-red-500 mt-2">{{ form.errors.body }}</div>
 
-            <!-- Кнопка отправки формы -->
             <div class="mt-4">
-                <button class="primary-btn" :disabled="form.processing">
+                <button class="primary-btn" type="submit" :disabled="form.processing">
                     Update Post
                 </button>
             </div>
         </form>
+        <!-- Контейнер для Editor.js -->
+        <div id="editorjs" class="editor-container mt-4"></div>
+
     </div>
 </template>

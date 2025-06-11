@@ -14,6 +14,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@canburaks/text-align-editorjs": "^1.1.0",
         "@editorjs/code": "^2.9.3",
         "@editorjs/delimiter": "^1.4.2",
         "@editorjs/editorjs": "^2.30.8",
@@ -25,6 +26,8 @@
         "@editorjs/table": "^2.4.5",
         "@inertiajs/vue3": "^1.2.0",
         "@vitejs/plugin-vue": "^5.1.4",
+        "editorjs-paragraph-with-alignment": "^3.0.0",
+        "editorjs-text-alignment-blocktune": "^1.0.3",
         "lodash": "^4.17.21",
         "vue": "^3.5.9"
     }

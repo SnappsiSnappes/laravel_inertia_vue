@@ -93,4 +93,101 @@
     .custom-link:hover::after {
         @apply w-full;
     }
+
+    /* Стилизация блоков Editor.js */
+    .editor-block {
+        @apply mb-4; /* Отступ между блоками */
+    }
+
+    .editor-block[data-alignment='left'] {
+        @apply text-left;
+    }
+
+    .editor-block[data-alignment='center'] {
+        @apply text-center;
+    }
+
+    .editor-block[data-alignment='right'] {
+        @apply text-right;
+    }
+    .editor-block {
+        margin-bottom: 1rem;
+    }
+
+    .paragraph {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .header-1,
+    h1 {
+        @apply text-4xl font-bold text-center pt-5;
+    }
+
+    .header-2,
+    h2 {
+        @apply text-3xl font-bold text-center;
+    }
+
+    .header-3,
+    h3 {
+        @apply text-2xl font-bold text-center;
+    }
+
+    .header-4,
+    h4 {
+        @apply text-xl font-bold text-center;
+    }
+
+    .header-5,
+    h5 {
+        @apply text-lg font-bold text-center;
+    }
+
+    .header-6,
+    h6 {
+        @apply text-base font-bold text-center;
+    }
+    .list {
+        @apply list-disc pl-5;
+    }
+
+.image {
+    @apply flex justify-center items-center overflow-hidden max-w-full max-h-[500px] mx-auto my-4;
+}
+
+.image img {
+    @apply max-w-full max-h-[500px] rounded-md object-cover border-4 border-violet-300;
+}
+}
+
+/* Стили для контейнера Editor.js */
+.editor-container {
+    border: 1px solid #ccc; /* Добавляем границу */
+    border-radius: 8px; /* Скругляем углы */
+    padding: 16px; /* Внутренний отступ */
+    min-height: 300px; /* Минимальная высота */
+    max-height: 600px; /* Максимальная высота */
+    overflow-y: auto; /* Добавляем прокрутку при необходимости */
+    background-color: #f9f9f9; /* Фоновый цвет */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для объемного эффекта */
+}
+
+/* Убираем лишний padding-bottom */
+.editor-container > div {
+    padding-bottom: 0 !important;
+}
+
+/* Стилизация кнопок инструментов Editor.js */
+.ce-toolbar__actions button {
+    background-color: #007bff; /* Цвет фона кнопок */
+    color: white; /* Цвет текста */
+    border: none; /* Убираем границу */
+    border-radius: 4px; /* Скругляем углы */
+    padding: 8px 12px; /* Внутренний отступ */
+    cursor: pointer; /* Изменяем курсор при наведении */
+}
+
+.ce-toolbar__actions button:hover {
+    background-color: #0056b3; /* Цвет фона при наведении */
 }
