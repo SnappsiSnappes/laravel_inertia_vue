@@ -13,11 +13,22 @@
 
             <!-- Списки -->
             <div v-else-if="block.type === 'list'" class="list">
-                <ul v-if="block.data.style === 'unordered'">
-                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item }}</li>
+                <!-- Чек-лист -->
+                <ul v-if="block.data.style === 'checklist'">
+                    <li v-for="(item, idx) in block.data.items" :key="idx" class="flex items-center">
+                        <input type="checkbox" :checked="item.meta?.checked" disabled class="mr-2" />
+                        <span>{{ item.content }}</span>
+                    </li>
                 </ul>
+
+                <!-- Маркированный список -->
+                <ul v-else-if="block.data.style === 'unordered'">
+                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item.content }}</li>
+                </ul>
+
+                <!-- Нумерованный список -->
                 <ol v-else>
-                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item }}</li>
+                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item.content }}</li>
                 </ol>
             </div>
 
@@ -69,4 +80,3 @@ const alignmentClass = (block) => {
     }
 };
 </script>
-

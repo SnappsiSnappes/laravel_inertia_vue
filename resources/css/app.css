@@ -150,11 +150,37 @@
     h6 {
         @apply text-base font-bold text-center;
     }
-    .list {
-        @apply list-disc pl-5;
+
+    /* Стилизация маркированных и нумерованных списков */
+    .list ul,
+    .list ol {
+        @apply pl-5 mb-4;
     }
 
-    .image {
+    .list ul {
+        @apply list-disc;
+    }
+
+    .list ol {
+        @apply list-decimal;
+    }
+
+    .list li {
+        @apply text-slate-900;
+    }
+
+    /* Стилизация чекбоксов */
+    .list input[type='checkbox'] {
+        @apply appearance-none w-4 h-4 rounded border border-slate-300 bg-white checked:bg-blue-500 checked:border-blue-500;
+    }
+
+    .list input[type='checkbox']:checked::after {
+        content: '✔';
+        @apply text-white flex w-4 h-4 items-center justify-center;
+    }
+
+    .image,
+    .image-tool__image-picture {
         @apply flex justify-center items-center overflow-hidden max-w-full max-h-[500px] mx-auto my-4;
     }
 
