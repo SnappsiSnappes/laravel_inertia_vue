@@ -1,6 +1,5 @@
 <script>
 import { ref, computed, watch } from 'vue';
-
 export default {
     props: {
         auth: Object

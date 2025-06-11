@@ -20,22 +20,49 @@ class PostController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
-        $posts = Post::with('user')->latest()->paginate(5);
 
 
-        // Format dates using Carbon and add human-readable date
-        $posts->each(function ($post) {
-            $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-            $post->short_body = Str::words($post->body, 15);
-        });
+public function index()
+{
+    $posts = Post::with('user')->latest()->paginate(5);
 
-        return inertia('Posts/Posts', [
-            'posts' => $posts,
-        ]);
-    }
+    // Format dates using Carbon and add human-readable date
+    $posts->each(function ($post) {
+        $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
 
+        // Parse the JSON body into blocks
+        try {
+            $parsedBody = json_decode($post->body, true);
+
+            // Ensure the parsed body has the expected structure
+            if (isset($parsedBody['blocks'])) {
+                // Оставляем только первый блок
+                $firstBlock = array_slice($parsedBody['blocks'], 0, 1);
+
+                // Если первый блок — параграф, сокращаем текст
+                foreach ($firstBlock as &$block) {
+                    if ($block['type'] === 'paragraph') {
+                        $block['data']['text'] = Str::words($block['data']['text'], 50, '...');
+                    }
+                }
+
+                // Обновляем массив blocks, чтобы содержал только первый блок
+                $parsedBody['blocks'] = $firstBlock;
+
+                // Update the post's body with the shortened content
+                $post->body = json_encode($parsedBody);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error parsing post body:', ['post_id' => $post->id, 'error' => $e->getMessage()]);
+        }
+    });
+
+    return inertia('Posts/Posts', [
+        'posts' => $posts,
+        'authUser' => auth()->user(), // Передаем данные текущего пользователя
+
+    ]);
+}
 
 
 

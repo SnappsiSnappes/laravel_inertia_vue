@@ -18,6 +18,8 @@ const parsedBody = computed(() => {
         return []
     }
 })
+
+console.log(props.post)
 </script>
 
 <template>

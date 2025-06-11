@@ -14,7 +14,8 @@ class PostPolicy
     public function viewAny(User $user): bool
     {
         // Разрешить просмотр списка постов только аутентифицированным пользователям
-        return $user->id !== null;
+        // return $user->id !== null;
+        return true;
     }
 
     /**

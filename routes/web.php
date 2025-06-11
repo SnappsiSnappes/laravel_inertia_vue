@@ -37,8 +37,6 @@ Route::middleware('auth')->group(function () {
         return request()->user()->only('id', 'name', 'avatar', 'email');
     });
 
-    // Маршруты для постов
-    Route::resource('posts', PostController::class);
 });
 
 // Главная страница
@@ -51,7 +49,8 @@ Route::inertia('/about', 'About')->name('about');
 Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_users');
 
 
-
+// Маршруты для постов
+Route::resource('posts', PostController::class);
 
 
 Route::post('/upload-image', function (Request $request) {

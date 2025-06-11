@@ -1,8 +1,10 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
+import PostContent from '../Components/PostContent.vue'
 
 const props = defineProps({
     posts: Object,
+    authUser: Object, // Добавляем пропс для данных текущего пользователя
 })
 </script>
 
@@ -13,15 +15,20 @@ const props = defineProps({
 
         <div v-for="post in posts.data" :key="post.id" class="mb-4 border-b pb-2">
             <h2 class="text-lg font-bold">{{ post.title }}</h2>
-            <p>{{ post.short_body }}...</p>
+            <PostContent :post="post" />
             <p class="text-sm text-gray-500">{{ post.humanReadableDate }}</p>
 
             <div class="flex gap-2 mt-2">
+                <!-- Кнопка "View" -->
                 <a :href="route('posts.show', post.id)" class="text-blue-500">View</a>
-                <a :href="route('posts.edit', post.id)" class="text-green-500">Edit</a>
-                <form @submit.prevent="deletePost(post.id)">
-                    <button type="submit" class="text-red-500">Delete</button>
-                </form>
+
+                <!-- Проверка на авторизацию и владение постом -->
+                <template v-if="authUser && authUser.id === post.user_id">
+                    <a :href="route('posts.edit', post.id)" class="text-blue-500">Edit</a>
+                    <form @submit.prevent="deletePost(post.id)">
+                        <button type="submit" class="text-red-500">Delete</button>
+                    </form>
+                </template>
             </div>
         </div>
 
@@ -31,14 +38,8 @@ const props = defineProps({
 
         <!-- Pagination -->
         <div v-if="posts.links.length > 3" class="mt-4">
-            <Link
-                v-for="(link, key) in posts.links"
-                :key="key"
-                :href="link.url"
-                v-html="link.label"
-                class="px-2 py-1 rounded"
-                :class="{ 'bg-blue-500 text-white': link.active }"
-            />
+            <Link v-for="(link, key) in posts.links" :key="key" :href="link.url" v-html="link.label"
+                class="px-2 py-1 rounded" :class="{ 'bg-blue-500 text-white': link.active }" />
         </div>
     </div>
 </template>

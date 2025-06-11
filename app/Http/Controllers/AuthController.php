@@ -102,16 +102,19 @@ class AuthController extends Controller
         return redirect()->route('edit')->with('message', 'Account updated successfuly!');
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
 
-        $request->session()->invalidate();
+public function logout(Request $request)
+{
+    // Invalidate session and regenerate token
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        $request->session()->regenerateToken();
+    // Logout user
+    Auth::logout();
 
-        return redirect('/');
-    }
+    // Redirect to home with updated props
+    return redirect()->route('home')->with('auth', null);
+}
 
     public function delete_user(Request $request)
     {
