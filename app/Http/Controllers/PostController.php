@@ -19,25 +19,25 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-     
-     public function index()
-     {
-         $posts = Post::with('user')->latest()->paginate(5);
 
-         
-         // Format dates using Carbon and add human-readable date
-         $posts->each(function ($post) {
-             $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-             $post->short_body = Str::words($post->body, 15);
-         });
-         
-         return inertia('Posts/Posts', [
-             'posts' => $posts,
-         ]);
-     }
-     
-     
-    
+    public function index()
+    {
+        $posts = Post::with('user')->latest()->paginate(5);
+
+
+        // Format dates using Carbon and add human-readable date
+        $posts->each(function ($post) {
+            $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
+            $post->short_body = Str::words($post->body, 15);
+        });
+
+        return inertia('Posts/Posts', [
+            'posts' => $posts,
+        ]);
+    }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -52,36 +52,36 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
 
-     public function store(StorePostRequest $request)
-     {
-         // Валидация данных
-         $validated = $request->validated();
-     
-         // Создание поста с user_id
-         $post = Post::create([
-             'user_id' => Auth::id(), // Добавьте user_id
-             'title' => $validated['title'],
-             'body' => $validated['body'],
-         ]);
-     
-         return redirect()->route('posts.index')->with('message', 'Post created successfully!');
-     }
+    public function store(StorePostRequest $request)
+    {
+        // Валидация данных
+        $validated = $request->validated();
+
+        // Создание поста с user_id
+        $post = Post::create([
+            'user_id' => Auth::id(), // Добавьте user_id
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+        ]);
+
+        return redirect()->route('posts.index')->with('message', 'Post created successfully!');
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(Post $post)
     {
-            // Load the post with its associated user
-    $post->load('user');
+        // Load the post with its associated user
+        $post->load('user');
 
-    // Format the date for better readability
-    $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
+        // Format the date for better readability
+        $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
 
-    // Return the post data to the frontend
-    return inertia('Posts/Show', [
-        'post' => $post,
-    ]);
+        // Return the post data to the frontend
+        return inertia('Posts/Show', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -89,15 +89,15 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-            // Ensure the user is authorized to edit this post
-    if ($post->user_id !== Auth::id()) {
-        abort(403, 'Unauthorized action.');
-    }
+        // Ensure the user is authorized to edit this post
+        if ($post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
-    // Return the post data to the frontend
-    return inertia('Posts/Edit', [
-        'post' => $post,
-    ]);
+        // Return the post data to the frontend
+        return inertia('Posts/Edit', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -107,13 +107,13 @@ class PostController extends Controller
     {
         // Валидация данных (уже выполнена через UpdatePostRequest)
         $validated = $request->validated();
-    
+
         // Обновление поста
         $post->update([
             'title' => $validated['title'],
             'body' => $validated['body'],
         ]);
-    
+
         // Перенаправление с сообщением об успехе
         return redirect()->route('posts.index')->with('message', 'Post updated successfully!');
     }
@@ -127,10 +127,10 @@ class PostController extends Controller
         if ($post->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
-    
+
         // Delete the post
         $post->delete();
-    
+
         // Redirect to the posts index page with a success message
         return redirect()->route('posts.index')->with('message', 'Post deleted successfully!');
     }

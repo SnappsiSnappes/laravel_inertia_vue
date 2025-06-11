@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 // Гости
 Route::middleware('guest')->group(function () {
@@ -47,3 +49,22 @@ Route::inertia('/about', 'About')->name('about');
 
 // Показать всех пользователей
 Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_users');
+
+
+
+
+
+Route::post('/upload-image', function (Request $request) {
+    if (!$request->hasFile('image')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    $path = $request->file('image')->store('images', 'public');
+
+    return response()->json([
+        'success' => 1,
+        'file' => [
+            'url' => Storage::disk('public')->url($path),
+        ],
+    ]);
+});

@@ -1,6 +1,6 @@
 /* Please note this document will be updated as time goes by. Thank you */
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,17 +8,18 @@
 
 @layer base {
     body {
-        font-family: "Poppins", sans-serif;
+        font-family: 'Poppins', sans-serif;
     }
 }
 
 @layer components {
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="url"], textarea {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='search'],
+    input[type='tel'],
+    input[type='url'],
+    textarea {
         @apply block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white;
     }
     label {
@@ -33,7 +34,7 @@
     /* main {
         @apply max-w-screen-lg mx-auto;
     } */
-    .pseudo-container{
+    .pseudo-container {
         @apply max-w-screen-lg mx-auto;
     }
 
@@ -68,9 +69,28 @@
         @apply px-6 py-4 border-b border-slate-100;
     }
     .avatar {
-        @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover ;
+        @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;
     }
     .round-btn {
         @apply w-8 h-8 overflow-auto rounded-full bg-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-100 focus:ring-offset-2 focus:ring-offset-slate-800;
+    }
+
+    /* класс для ссылок */
+    p a {
+        @apply custom-link;
+    }
+
+    /* подчеркивание со смещением */
+    .custom-link {
+        @apply relative text-blue-500 font-semibold;
+    }
+
+    .custom-link::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300;
+    }
+
+    .custom-link:hover::after {
+        @apply w-full;
     }
 }
