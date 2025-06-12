@@ -23,35 +23,62 @@ class PostController extends Controller
 
 
 
+
 public function index()
 {
     $posts = Post::with('user')->latest()->paginate(5);
 
-    // Format dates using Carbon and add human-readable date
+    // Форматируем каждую статью
     $posts->each(function ($post) {
+        // Добавляем человекочитаемую дату
         $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
 
-        // Parse the JSON body into blocks
         try {
+            // Парсим JSON-тело статьи
             $parsedBody = json_decode($post->body, true);
 
-            // Ensure the parsed body has the expected structure
+            // Проверяем структуру parsedBody
             if (isset($parsedBody['blocks'])) {
-                // Оставляем только первый блок
-                $firstBlock = array_slice($parsedBody['blocks'], 0, 1);
+                // Инициализируем переменные для текста и картинки
+                $fullText = '';
+                $firstImage = null;
 
-                // Если первый блок — параграф, сокращаем текст
-                foreach ($firstBlock as &$block) {
-                    if ($block['type'] === 'paragraph') {
-                        $block['data']['text'] = Str::words($block['data']['text'], 50, '...');
+                // Проходим по всем блокам
+                foreach ($parsedBody['blocks'] as $block) {
+                    switch ($block['type']) {
+                        case 'paragraph':
+                            // Если блок — параграф, добавляем его текст
+                            $fullText .= $block['data']['text'] . ' ';
+                            break;
+
+                        case 'header':
+                            // Если блок — заголовок, добавляем его текст
+                            $fullText .= $block['data']['text'] . ' ';
+                            break;
+
+                        case 'list':
+                            // Если блок — список, объединяем элементы в строку
+                            $fullText .= implode(' ', array_column($block['data']['items'], 'content')) . ' ';
+                            break;
+
+                        case 'image':
+                            // Если блок — изображение, сохраняем первую картинку
+                            if (!$firstImage && isset($block['data']['file']['url'])) {
+                                $firstImage = $block['data']['file']['url'];
+                            }
+                            break;
+
+                        default:
+                            // Пропускаем другие типы блоков
+                            break;
                     }
                 }
 
-                // Обновляем массив blocks, чтобы содержал только первый блок
-                $parsedBody['blocks'] = $firstBlock;
+                // Обрезаем текст до 50 слов
+                $post->previewText = Str::words(trim($fullText), 50, '...');
 
-                // Update the post's body with the shortened content
-                $post->body = json_encode($parsedBody);
+                // Сохраняем URL первой картинки
+                $post->previewImage = $firstImage;
             }
         } catch (\Exception $e) {
             \Log::error('Error parsing post body:', ['post_id' => $post->id, 'error' => $e->getMessage()]);
@@ -61,7 +88,7 @@ public function index()
     return inertia('Posts/Posts', [
         'posts' => $posts,
         'authUser' => auth()->user(), // Передаем данные текущего пользователя
-        'IsAdmin'=>Auth::user()?->can('IsAdmin',User::class )
+        'IsAdmin' => Auth::user()?->can('IsAdmin', User::class),
     ]);
 }
 
