@@ -18,7 +18,9 @@ const page = usePage();
 const props = defineProps({
     initialData: {
         type: Object,
-        default: () => ({}),
+        
+        // конвенция vue 3
+        default: () => ({}), 
     },
 });
 
@@ -75,7 +77,8 @@ const save = async () => {
     }
 };
 
-defineExpose({ save });
+// используется родителем
+defineExpose({ save }); 
 </script>
 
 <template>

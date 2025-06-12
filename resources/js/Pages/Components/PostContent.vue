@@ -41,7 +41,6 @@
             </blockquote>
 
             <!-- Изображения -->
-            <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image" :class="{ 'stretched': block.data.stretched }">
                 <img :src="block.data.file.url" :alt="block.data.caption" />
                 <p v-if="block.data.caption" class="text-sm text-slate-500 mt-2 text-center">
