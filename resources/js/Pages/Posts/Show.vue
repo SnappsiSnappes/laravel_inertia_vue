@@ -12,7 +12,6 @@ console.log(props.post);
 <template>
     <Head :title="`${post.title}`" />
     <div class="w-2/4 mx-auto">
-        <h1>{{ post.title }}</h1>
 
         <!-- Используем компонент PostContent -->
         <PostContent :post="post" />
