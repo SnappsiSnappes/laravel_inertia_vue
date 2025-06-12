@@ -76,7 +76,7 @@
     }
 
     /* класс для ссылок */
-    a {
+    .paragraph > a {
         @apply custom-link;
     }
 
