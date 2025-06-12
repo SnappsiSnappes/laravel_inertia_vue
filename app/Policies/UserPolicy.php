@@ -8,10 +8,10 @@ class UserPolicy
 {
   public function delete(User $user)
   {
-    return $user->name == 'v';
+    return $user->name == 'a';
   }
   public function IsAdmin(User $user)
   {
-    return $user->name == 'v';
+    return $user->name == 'a';
   }
 }

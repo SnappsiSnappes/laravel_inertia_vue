@@ -17,7 +17,7 @@ console.log(props.IsAdmin)
         <h1>All Posts</h1>
 
         <div v-for="post in posts.data" :key="post.id" class="mb-4 border-b pb-2">
-            <h2 class="text-lg font-bold">{{ post.title }}</h2>
+            <h1 class="">{{ post.title }}</h1>
             <PostContent :post="post" />
             <p class="text-sm text-gray-500">{{ post.humanReadableDate }}</p>
 
