@@ -8,7 +8,6 @@ const props = defineProps({
     IsAdmin: Boolean,
     authUser: Object,
 })
-console.log(props.post);
 
 </script>
 

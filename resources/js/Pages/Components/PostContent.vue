@@ -32,11 +32,12 @@ const alignmentClass = (block) => {
     }
 };
 
+console.log(props.post.body)
 </script>
 
 <template>
     <p class="text-sm text-gray-500">{{ post.humanReadableDate }} by user <span class="underline">{{ post.user.email
-            }}</span></p>
+    }}</span></p>
 
     <div class="">
         <h1 class="py-10">{{ post.title }}</h1>
@@ -72,8 +73,6 @@ const alignmentClass = (block) => {
                     <li v-for="(item, idx) in block.data.items" :key="idx">{{ item.content }}</li>
                 </ol>
             </div>
-
-
 
             <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image" :class="{ 'stretched': block.data.stretched }">
@@ -128,7 +127,22 @@ const alignmentClass = (block) => {
                     {{ block.data.caption }}
                 </p>
             </div>
+
+            <!-- Таблица -->
+            <div v-else-if="block.type === 'table'" class="table-block my-4">
+                <table class="w-full border-collapse border border-gray-300">
+                    <tbody>
+                        <tr v-for="(row, rowIndex) in block.data.content" :key="rowIndex"
+                            class="border border-gray-300">
+                            <td v-for="(cell, cellIndex) in row" :key="cellIndex"
+                                class="p-2 border border-gray-300 text-center">
+                                {{ cell }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 </template>
-
