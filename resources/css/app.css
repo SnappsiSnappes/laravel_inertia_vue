@@ -76,7 +76,7 @@
     }
 
     /* класс для ссылок */
-    .paragraph > a {
+    .paragraph > a, .content > a {
         @apply custom-link;
     }
 
@@ -178,6 +178,7 @@
         content: '✔';
         @apply text-white flex w-4 h-4 items-center justify-center;
     }
+
 
     .image,
     .image-tool__image-picture {

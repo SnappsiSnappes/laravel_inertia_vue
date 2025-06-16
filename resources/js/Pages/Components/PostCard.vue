@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { PostCardHelper } from '../../Objects/PostCardHelper';
 
 const props = defineProps({
     post: Object,
@@ -8,18 +9,19 @@ const props = defineProps({
     authUser: Object,
 });
 
-
-
-
 // Разбор JSON-данных
 const parsedBody = computed(() => {
     try {
-        return JSON.parse(props.post.body);
+        const ParsedBody = JSON.parse(props.post.body);
+        console.log('ParsedBody Body:', ParsedBody); // Логируем разобранный объект
+        return ParsedBody;
     } catch (error) {
         console.error('Error parsing post body:', error);
         return { blocks: [] };
     }
 });
+
+
 
 // Определение классов выравнивания
 const alignmentClass = (block) => {
@@ -33,19 +35,30 @@ const alignmentClass = (block) => {
     }
 };
 
+console.log(props.post)
 </script>
 
 <template>
-
     <div>
-        <h1 class="">{{ post.title }}</h1>
+        <h1 class="" >{{ post.title }}</h1>
 
-        <p class="text-sm text-gray-500">{{ post.humanReadableDate }}</p>
+        <p class="text-sm text-gray-500">created {{ post.humanReadableDate }}</p>
         <p class="text-sm text-gray-500">by user {{ post.user.email }}</p>
 
+        <div class="flex gap-2 mt-2">
+            <!-- Кнопка "View" -->
+            <a :href="route('posts.show', post.id)" class="text-blue-500">View</a>
 
+            <!-- Проверка на авторизацию и владение постом -->
+            <template v-if="(authUser && authUser.id === post.user_id) || IsAdmin">
+                <a :href="route('posts.edit', post.id)" class="text-blue-500">Edit</a>
+                <form @submit.prevent="deletePost(post.id)">
+                    <button type="submit" class="text-red-500">Delete</button>
+                </form>
+            </template>
+        </div>
 
-        <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
+<div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
             <!-- Параграф -->
             <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
 
@@ -91,6 +104,15 @@ const alignmentClass = (block) => {
                 </p>
             </div>
         </div>
+
+
+        <!-- <div class="content" v-html="props.post.previewText"></div> -->
+        
+
+        <div v-if="props.post.previewImage" class="image">
+            <img width="200px" :src="props.post.previewImage" />
+        </div>
+
     </div>
 </template>
 

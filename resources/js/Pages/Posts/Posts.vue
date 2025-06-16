@@ -1,12 +1,14 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import PostContent from '../Components/PostContent.vue'
+import PostCard from '../Components/PostCard.vue';
 
 const props = defineProps({
     posts: Object,
     authUser: Object, // Добавляем пропс для данных текущего пользователя
     IsAdmin: Boolean
 })
+
+console.log(props.posts)
 
 </script>
 
@@ -16,20 +18,15 @@ const props = defineProps({
     <div class="w-2/4 mx-auto">
         <h1>All Posts</h1>
 
-
         <div class="mt-4">
             <a :href="route('posts.create')" class="primary-btn w-1/5">Create New Post</a>
         </div>
 
         <div v-for="post in posts.data" :key="post.id" class="mb-4 border-b pb-2">
 
-
-
-            <PostContent :post="post" :IsAdmin="IsAdmin" :authUser="authUser"/>
-
+            <PostCard :post="post" :IsAdmin="IsAdmin" :authUser="authUser"/>
 
         </div>
-
 
         <!-- Pagination -->
         <div v-if="posts.links.length > 3" class="mt-4">

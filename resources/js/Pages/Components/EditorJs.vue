@@ -12,15 +12,19 @@ import Embed from '@editorjs/embed';
 import axios from 'axios';
 import paragraph from 'editorjs-paragraph-with-alignment';
 import { usePage } from '@inertiajs/vue3';
+import InlineCode from '@editorjs/inline-code';
+import ColorPicker from 'editorjs-color-picker';
+import Underline from '@editorjs/underline';
+
 // Доступ к данным страницы
 const page = usePage();
 
 const props = defineProps({
     initialData: {
         type: Object,
-        
+
         // конвенция vue 3
-        default: () => ({}), 
+        default: () => ({}),
     },
 });
 
@@ -32,6 +36,16 @@ onMounted(() => {
     editor.value = new EditorJS({
         holder: 'editorjs',
         tools: {
+                code: CodeTool,
+
+            underline: Underline,
+
+            ColorPicker: {
+                class: ColorPicker,
+            },
+
+            inlineCode: InlineCode,
+
             paragraph: {
                 class: paragraph,
                 inlineToolbar: true,
@@ -50,7 +64,6 @@ onMounted(() => {
                     },
                 },
             },
-            code: CodeTool,
             table: Table,
             delimiter: Delimiter,
             embed: Embed,
