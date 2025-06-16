@@ -1,6 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import PostContent from '../Components/PostContent.vue'
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     post: Object,
@@ -33,3 +34,22 @@ console.log(props.post);
 
     </div>
 </template>
+
+<script>
+export default {
+    methods: {
+        deletePost(id) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                router.delete(route('posts.destroy', id), {
+                    onSuccess: () => {
+                        console.log('Post deleted successfully');
+                    },
+                    onError: () => {
+                        console.error('Error deleting post');
+                    },
+                });
+            }
+        },
+    },
+};
+</script>

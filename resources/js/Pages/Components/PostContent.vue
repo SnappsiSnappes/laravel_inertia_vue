@@ -1,6 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
     post: Object,
@@ -36,16 +35,15 @@ const alignmentClass = (block) => {
 </script>
 
 <template>
+    <p class="text-sm text-gray-500">{{ post.humanReadableDate }} by user <span class="underline">{{ post.user.email
+            }}</span></p>
 
-    <div>
-        <h1 class="">{{ post.title }}</h1>
-
-        <p class="text-sm text-gray-500">{{ post.humanReadableDate }}</p>
-        <p class="text-sm text-gray-500">by user {{ post.user.email }}</p>
-
+    <div class="">
+        <h1 class="py-10">{{ post.title }}</h1>
 
 
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
+
             <!-- Параграф -->
             <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
 
@@ -75,13 +73,7 @@ const alignmentClass = (block) => {
                 </ol>
             </div>
 
-            <!-- Цитаты -->
-            <blockquote v-else-if="block.type === 'quote'" class="blockquote">
-                <p>{{ block.data.text }}</p>
-                <footer v-if="block.data.caption" class="text-sm text-slate-500 mt-2">
-                    {{ block.data.caption }}
-                </footer>
-            </blockquote>
+
 
             <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image" :class="{ 'stretched': block.data.stretched }">
@@ -90,25 +82,53 @@ const alignmentClass = (block) => {
                     {{ block.data.caption }}
                 </p>
             </div>
+
+            <!-- Warning блок -->
+            <div v-else-if="block.type === 'warning'"
+                class="warning-block relative bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+                <!-- Иконка предупреждения -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-4 left-4 w-8 h-8 text-yellow-500 opacity-75"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+
+                <!-- Заголовок (если есть) -->
+                <strong v-if="block.data.title" class="block font-bold mb-2 pl-16">{{ block.data.title }}</strong>
+
+                <!-- Сообщение -->
+                <p class="text-gray-800 pl-16">{{ block.data.message }}</p>
+            </div>
+
+
+            <!-- Цитаты -->
+            <div v-else-if="block.type === 'quote'"
+                class="quote-block relative bg-gray-50 border-l-4 border-gray-300 p-6 rounded-lg">
+                <!-- Иконка кавычек -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-4 left-4 w-8 h-8 text-gray-400 opacity-75"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+
+                <!-- Текст цитаты -->
+                <p class="text-gray-800 pl-16">{{ block.data.text }}</p>
+
+                <!-- Подпись (если есть) -->
+                <footer v-if="block.data.caption" class="text-sm text-gray-500 mt-2 pl-16">
+                    — {{ block.data.caption }}
+                </footer>
+            </div>
+
+            <!-- Встраиваемый контент (embed) -->
+            <div v-else-if="block.type === 'embed'" class="embed-block relative">
+                <iframe :src="block.data.embed" frameborder="0" allowfullscreen
+                    class="w-1/2   h-auto aspect-video rounded-lg shadow-md mx-auto"></iframe>
+                <p v-if="block.data.caption" class="text-sm text-gray-700 mt-2 text-center">
+                    {{ block.data.caption }}
+                </p>
+            </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    methods: {
-        deletePost(id) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                router.delete(route('posts.destroy', id), {
-                    onSuccess: () => {
-                        console.log('Post deleted successfully');
-                    },
-                    onError: () => {
-                        console.error('Error deleting post');
-                    },
-                });
-            }
-        },
-    },
-};
-</script>

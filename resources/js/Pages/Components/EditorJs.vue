@@ -15,6 +15,8 @@ import { usePage } from '@inertiajs/vue3';
 import InlineCode from '@editorjs/inline-code';
 import ColorPicker from 'editorjs-color-picker';
 import Underline from '@editorjs/underline';
+import Warning from '@editorjs/warning';
+import Marker from '@editorjs/marker';
 
 // Доступ к данным страницы
 const page = usePage();
@@ -36,7 +38,13 @@ onMounted(() => {
     editor.value = new EditorJS({
         holder: 'editorjs',
         tools: {
-                code: CodeTool,
+            Marker: {
+                class: Marker,
+
+            },
+            warning: Warning,
+
+            code: CodeTool,
 
             underline: Underline,
 
@@ -47,9 +55,9 @@ onMounted(() => {
             inlineCode: InlineCode,
 
             paragraph: {
-                class: paragraph,
                 inlineToolbar: true,
             },
+
             header: Header,
             list: List,
             quote: Quote,
