@@ -37,10 +37,19 @@ console.log(props.post.body)
 
 <template>
     <p class="text-sm text-gray-500">{{ post.humanReadableDate }} by user <span class="underline">{{ post.user.email
-    }}</span></p>
+            }}</span></p>
 
     <div class="">
         <h1 class="py-10">{{ post.title }}</h1>
+
+        <div class="PreviewDiv" id="preview">
+
+            <p>{{ post.preview_text }}</p>
+            <div v-if="props.post.preview_image" class="image">
+                <img width="200px" :src="props.post.preview_image" />
+            </div>
+
+        </div>
 
 
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">

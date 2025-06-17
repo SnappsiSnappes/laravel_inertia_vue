@@ -1,0 +1,86 @@
+.editor-block {
+    @apply mb-4; // Отступ между блоками
+
+    &[data-alignment='left'] {
+        @apply text-left;
+    }
+
+    &[data-alignment='center'] {
+        @apply text-center;
+    }
+
+    &[data-alignment='right'] {
+        @apply text-right;
+    }
+}
+
+.paragraph {
+    @apply text-base leading-relaxed;
+}
+
+.blockquote {
+    @apply border-l-4 border-slate-300 pl-4 italic text-slate-700;
+}
+
+.header-1,
+h1 {
+    @apply text-4xl font-bold text-center pt-5;
+}
+
+.header-2,
+h2 {
+    @apply text-3xl font-bold text-center;
+}
+
+.header-3,
+h3 {
+    @apply text-2xl font-bold text-center;
+}
+
+.header-4,
+h4 {
+    @apply text-xl font-bold text-center;
+}
+
+.header-5,
+h5 {
+    @apply text-lg font-bold text-center;
+}
+
+.header-6,
+h6 {
+    @apply text-base font-bold text-center;
+}
+
+.list ul,
+.list ol {
+    @apply pl-5 mb-4;
+}
+
+.list ul {
+    @apply list-disc;
+}
+
+.list ol {
+    @apply list-decimal;
+}
+
+.list li {
+    @apply text-slate-900;
+}
+
+.image {
+    @apply flex justify-center items-center overflow-hidden max-w-full max-h-[500px] mx-auto my-4;
+
+    img {
+        @apply max-w-full max-h-[500px] rounded-md object-cover;
+    }
+
+    &.stretched {
+        @apply w-full;
+
+        img {
+            @apply w-full h-auto rounded-md object-cover;
+        }
+    }
+}

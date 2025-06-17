@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User; // Импортируем модель User
+use Illuminate\Support\Facades\Storage;
 
 
 class PostController extends Controller
@@ -32,59 +33,8 @@ class PostController extends Controller
         $posts->each(function ($post) {
             // Добавляем человекочитаемую дату
             $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-
-            try {
-                // Парсим JSON-тело статьи
-                $parsedBody = json_decode($post->body, true);
-
-                // Проверяем структуру parsedBody
-                if (isset($parsedBody['blocks'])) {
-                    // Инициализируем переменные для текста и картинки
-                    $fullText = '';
-                    $firstImage = null;
-
-                    // Проходим по всем блокам
-                    foreach ($parsedBody['blocks'] as $block) {
-                        switch ($block['type']) {
-                            case 'paragraph':
-                                // Если блок — параграф, добавляем его текст
-                                $fullText .= $block['data']['text'] . ' ';
-                                break;
-
-                            case 'header':
-                                // Если блок — заголовок, добавляем его текст
-                                $fullText .= $block['data']['text'] . ' ';
-                                break;
-
-                            case 'list':
-                                // Если блок — список, объединяем элементы в строку
-                                $fullText .= implode(' ', array_column($block['data']['items'], 'content')) . ' ';
-                                break;
-
-                            case 'image':
-                                // Если блок — изображение, сохраняем первую картинку
-                                if (!$firstImage && isset($block['data']['file']['url'])) {
-                                    $firstImage = $block['data']['file']['url'];
-                                }
-                                break;
-
-                            default:
-                                // Пропускаем другие типы блоков
-                                break;
-                        }
-                    }
-
-                    // Обрезаем текст до 50 слов
-                    $post->previewText = Str::words(trim($fullText), 50, '...');
-
-                    // Сохраняем URL первой картинки
-                    $post->previewImage = $firstImage;
-                }
-            } catch (\Exception $e) {
-                \Log::error('Error parsing post body:', ['post_id' => $post->id, 'error' => $e->getMessage()]);
-            }
+            $post->preview_image = '/storage/' . $post->preview_image;
         });
-
 
         return inertia('Posts/Posts', [
             'posts' => $posts,
@@ -110,14 +60,22 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
+
         // Валидация данных
         $validated = $request->validated();
+
+        // Обработка загруженного изображения
+        if ($request->hasFile('preview_image')) {
+            $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
+        }
 
         // Создание поста с user_id
         $post = Post::create([
             'user_id' => Auth::id(), // Добавьте user_id
             'title' => $validated['title'],
             'body' => $validated['body'],
+            'preview_text' => $validated['preview_text'],
+            'preview_image' => $validated['preview_image'] ?? null, // Если изображение не загружено, будет null
         ]);
 
         return redirect()->route('posts.index')->with('message', 'Post created successfully!');
@@ -133,6 +91,7 @@ class PostController extends Controller
 
         // Format the date for better readability
         $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
+        $post->preview_image = '/storage/' . $post->preview_image;
 
         // Return the post data to the frontend
         return inertia('Posts/Show', [

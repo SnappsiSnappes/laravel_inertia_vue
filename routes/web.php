@@ -37,6 +37,22 @@ Route::middleware('auth')->group(function () {
         return request()->user()->only('id', 'name', 'avatar', 'email');
     });
 
+
+
+    Route::post('/upload-image', function (Request $request) {
+        if (!$request->hasFile('image')) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
+
+        $path = $request->file('image')->store('images', 'public');
+
+        return response()->json([
+            'success' => 1,
+            'file' => [
+                'url' => Storage::disk('public')->url($path),
+            ],
+        ]);
+    });
 });
 
 // Главная страница
@@ -51,19 +67,3 @@ Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_use
 
 // Маршруты для постов
 Route::resource('posts', PostController::class);
-
-
-Route::post('/upload-image', function (Request $request) {
-    if (!$request->hasFile('image')) {
-        return response()->json(['error' => 'No file uploaded'], 400);
-    }
-
-    $path = $request->file('image')->store('images', 'public');
-
-    return response()->json([
-        'success' => 1,
-        'file' => [
-            'url' => Storage::disk('public')->url($path),
-        ],
-    ]);
-});

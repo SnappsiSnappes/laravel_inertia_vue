@@ -14,6 +14,8 @@ class Post extends Model
         "title",
         "body",
         "user_id", // Добавьте user_id
+        "preview_text", // Новое поле для текста предпросмотра
+        "preview_image", // Новое поле для ссылки на изображение
 
     ];
 

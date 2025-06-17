@@ -38,6 +38,8 @@ const addFile = (e) => {
         <form @submit.prevent="submit">
             <div class="grid place-items-center ">
                 <div class="relative w-28 h-28 rounded-full overflow-hidden border border-slate-300  ">
+                    
+                    <!-- avatar -->
                     <label for="avatar" class="absolute inset-0 grid content-end cursor-pointer">
                         <span class="bg-white/70 text-center">Avatar</span>
                     </label>
