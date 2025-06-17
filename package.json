@@ -36,6 +36,7 @@
         "editorjs-paragraph-with-alignment": "^3.0.0",
         "editorjs-text-alignment-blocktune": "^1.0.3",
         "lodash": "^4.17.21",
+        "sass-migrator": "^2.3.2",
         "vue": "^3.5.9"
     }
 }
