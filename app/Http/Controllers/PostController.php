@@ -50,6 +50,10 @@ class PostController extends Controller
      */
     public function create()
     {
+        // Проверяем, может ли пользователь редактировать пост
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('message', 'Пожалуйста, авторизуйтесь, чтобы создать пост.');
+        }
 
         return inertia('Posts/Create');
     }
