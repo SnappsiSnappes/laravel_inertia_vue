@@ -33,8 +33,8 @@ class PostController extends Controller
         $posts->each(function ($post) {
             // Добавляем человекочитаемую дату
             $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-            $post->preview_image != null 
-                ? '/storage/' . $post->preview_image 
+            $post->preview_image != null
+                ? '/storage/' . $post->preview_image
                 : null;
         });
 
@@ -166,51 +166,59 @@ class PostController extends Controller
 
 
 
-public function ChangeReaction(Request $request, $postId)
+    public function ChangeReaction(Request $request, $postId)
 {
     // Проверяем, авторизован ли пользователь
     if (!auth()->check()) {
-        return response()->json(['message' => 'Пользователь не авторизован.'], 401);
+        return response()->json([
+            'message' => 'Вы должны быть авторизованы, чтобы добавить реакцию.',
+            'type' => 'error',
+        ], 401);
     }
 
-    $request->validate([
-        'sticker_id' => 'required|string',
-    ]);
+    try {
+        $userId = auth()->id();
+        $stickerId = $request->input('sticker_id');
 
-    $userId = auth()->id(); // Получаем ID авторизованного пользователя
+        // Проверяем, существует ли реакция
+        $reaction = PostReaction::where('post_id', $postId)
+            ->where('sticker_id', $stickerId)
+            ->where('user_id', $userId)
+            ->first();
 
+        if ($reaction) {
+            // Удаляем реакцию
+            $reaction->delete();
 
+            return response()->json([
+                'message' => 'Реакция удалена.',
+                'type' => 'success',
+                'removed' => true,
+            ]);
+        }
 
-    $stickerId = $request->input('sticker_id');
+        // Добавляем новую реакцию
+        PostReaction::create([
+            'post_id' => $postId,
+            'sticker_id' => $stickerId,
+            'user_id' => $userId,
+            'ip_address' => $request->ip(),
+        ]);
 
-    // Проверяем, существует ли реакция
-    $reaction = PostReaction::where('post_id', $postId)
-        ->where('sticker_id', $stickerId)
-        ->where('user_id', $userId)
-        ->first();
-
-    if ($reaction) {
-        // Удаляем реакцию, если она уже существует
-        $reaction->delete();
-        return response()->json(['message' => 'Реакция удалена.', 'removed' => true]);
+        return response()->json([
+            'message' => 'Реакция добавлена.',
+            'type' => 'success',
+            'removed' => false,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Произошла ошибка.',
+            'type' => 'error',
+        ], 500);
     }
-
-
-$data = [
-    'post_id' => $postId,
-    'sticker_id' => $stickerId,
-    'user_id' => $userId,
-    'ip_address' => $request->ip(),
-];
-
-Log::info('Data before creating reaction:', $data);
-
-PostReaction::create($data);
-
-    return response()->json(['message' => 'Реакция добавлена.', 'removed' => false]);
 }
 
-public function getReactions($postId)
+    public function getReactions($postId)
     {
         $post = Post::with('reactions')->findOrFail($postId);
 
@@ -225,3 +233,4 @@ public function getReactions($postId)
         return response()->json($reactions);
     }
 }
+

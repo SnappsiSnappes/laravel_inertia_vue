@@ -41,7 +41,9 @@ class HandleInertiaRequests extends Middleware
                 : null,
 
             'flash' => [
-                'message' => fn() => $request->session()->get('message')
+                'message' => fn() => $request->session()->get('message'),
+                'type' => fn() => $request->session()->get('flash_type', 'info'), // Тип сообщения (по умолчанию 'info')
+
             ],
             'csrf_token' => csrf_token(),
 

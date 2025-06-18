@@ -1,9 +1,10 @@
 <template>
     <div class="stickers">
-        <button v-for="sticker in stickers" :key="sticker.id" @click="toggleReaction(sticker.id)">
-
-            <span :class="{ StickerActive: reactionCounts[sticker.id]?.count > 0, SingleSticker:1  }">{{ sticker.name
-                }}</span> <br>{{ reactionCounts[sticker.id]?.count || 0 }}
+        <button v-for="sticker in stickers" :key="sticker.id" @click="toggleReaction(sticker.id)"
+            :data-sticker-id="sticker.id">
+            <span class="SingleSticker" :class="{ StickerActive: reactionCounts[sticker.id]?.count > 0 }">
+                {{ sticker.name }}
+            </span> <br>{{ reactionCounts[sticker.id]?.count || 0 }}
         </button>
     </div>
 </template>
@@ -12,6 +13,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
+import { gsap } from 'gsap';
+import FlashMessage from '../Components/FlashMessage.vue';
 
 const page = usePage();
 
@@ -31,10 +34,10 @@ const stickers = ref([
 const reactionCounts = ref({});
 
 // Метод для переключения реакции
+
 const toggleReaction = async (stickerId) => {
-    // Проверяем, авторизован ли пользователь
     if (!page.props.auth.user) {
-        alert('Вы должны быть авторизованы, чтобы добавить реакцию.');
+        page.props.flash = { message: 'Вы должны быть авторизованы, чтобы добавить реакцию.', type: 'error' };
         return;
     }
 
@@ -44,30 +47,29 @@ const toggleReaction = async (stickerId) => {
             'X-CSRF-TOKEN': page.props.csrf_token,
         });
 
-        const { removed } = response.data;
+        const { message, type, removed } = response.data;
 
+        // Обновляем флеш-сообщение
+        page.props.flash = { message, type };
+
+        // Обновляем счётчик реакций
         if (removed) {
-            // Уменьшаем счётчик, если реакция была удалена
             if (reactionCounts.value[stickerId]) {
                 reactionCounts.value[stickerId].count -= 1;
 
-                // Если счётчик стал равен 0, удаляем запись
                 if (reactionCounts.value[stickerId].count === 0) {
                     delete reactionCounts.value[stickerId];
                 }
             }
-            alert('Реакция удалена.');
         } else {
-            // Увеличиваем счётчик, если реакция была добавлена
             if (!reactionCounts.value[stickerId]) {
                 reactionCounts.value[stickerId] = { sticker_id: stickerId, count: 0 };
             }
             reactionCounts.value[stickerId].count += 1;
-            alert('Реакция добавлена.');
         }
     } catch (error) {
         console.error(error);
-        alert('Произошла ошибка.');
+        page.props.flash = { message: 'Произошла ошибка.', type: 'error' };
     }
 };
 

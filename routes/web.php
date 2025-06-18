@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
 
     // Маршрут для реакций
     Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
+    
     Route::get('/posts/{postId}/reactions', [PostController::class, 'getReactions'])->name('posts.reactions');
 });
 
