@@ -84,7 +84,8 @@ class PostController extends Controller
             'preview_image' => $validated['preview_image'] ?? null, // Если изображение не загружено, будет null
         ]);
 
-        return redirect()->route('posts.index')->with('message', 'Post created successfully!');
+        return redirect()->route('posts.show', $post)
+            ->with('message', ['message' => 'Пост создан', 'type' => 'success']);
     }
 
     /**
@@ -129,6 +130,7 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+
         // Проверяем, может ли пользователь обновлять пост
         if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
@@ -137,16 +139,23 @@ class PostController extends Controller
         // Валидация данных (уже выполнена через UpdatePostRequest)
         $validated = $request->validated();
 
+
+        // Обработка загруженного изображения
+        if ($request->hasFile('preview_image')) {
+            $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
+        }
+
         // Обновление поста
         $post->update([
             'title' => $validated['title'],
             'body' => $validated['body'],
+            'preview_text' => $validated['preview_text'] ?? $post->preview_text, // Если preview_text не передан, оставляем старое значение
+            'preview_image' => $validated['preview_image'] ?? $post->preview_image, // Если изображение не загружено, оставляем старое
         ]);
 
         // Перенаправление с сообщением об успехе
-        return redirect()->route('posts.index')->with('message', 'Post updated successfully!');
+        return redirect()->route('posts.show', $post)->with('message',  ['message' => 'Пост обновлен', 'type' => 'success']);
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -161,62 +170,59 @@ class PostController extends Controller
         $post->delete();
 
         // Перенаправление с сообщением об успехе
-        return redirect()->route('posts.index')->with('message', 'Post deleted successfully!');
+        return redirect()->route('posts.index')->with('message',  ['message' => 'Пост удалён', 'type' => 'success']);
     }
 
 
 
     public function ChangeReaction(Request $request, $postId)
-{
-    // Проверяем, авторизован ли пользователь
-    if (!auth()->check()) {
-        return response()->json([
-            'message' => 'Вы должны быть авторизованы, чтобы добавить реакцию.',
-            'type' => 'error',
-        ], 401);
-    }
-
-    try {
-        $userId = auth()->id();
-        $stickerId = $request->input('sticker_id');
-
-        // Проверяем, существует ли реакция
-        $reaction = PostReaction::where('post_id', $postId)
-            ->where('sticker_id', $stickerId)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($reaction) {
-            // Удаляем реакцию
-            $reaction->delete();
-
+    {
+        // Проверяем, авторизован ли пользователь
+        if (!auth()->check()) {
             return response()->json([
-                'message' => 'Реакция удалена.',
-                'type' => 'success',
-                'removed' => true,
-            ]);
+                'message' => 'Вы должны быть авторизованы, чтобы добавить реакцию.',
+                'type' => 'error',
+            ], 401);
         }
 
-        // Добавляем новую реакцию
-        PostReaction::create([
-            'post_id' => $postId,
-            'sticker_id' => $stickerId,
-            'user_id' => $userId,
-            'ip_address' => $request->ip(),
-        ]);
+        try {
+            $userId = auth()->id();
+            $stickerId = $request->input('sticker_id');
 
-        return response()->json([
-            'message' => 'Реакция добавлена.',
-            'type' => 'success',
-            'removed' => false,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Произошла ошибка.',
-            'type' => 'error',
-        ], 500);
+            // Проверяем, существует ли реакция
+            $reaction = PostReaction::where('post_id', $postId)
+                ->where('sticker_id', $stickerId)
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($reaction) {
+                // Удаляем реакцию
+                $reaction->delete();
+
+                return response()->json([
+                    'message' => ['message' => 'Реакция удалена.', 'type' => 'success',],
+                    'removed' => true,
+                ]);
+            }
+
+            // Добавляем новую реакцию
+            PostReaction::create([
+                'post_id' => $postId,
+                'sticker_id' => $stickerId,
+                'user_id' => $userId,
+                'ip_address' => $request->ip(),
+            ]);
+
+            return response()->json([
+                'message' => ['message' => 'Реакция добавлена', 'type' => 'success'],
+                'removed' => false,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' =>  ['message' => 'Произошла ошибка.', 'type' => 'error'],
+            ], 500);
+        }
     }
-}
 
     public function getReactions($postId)
     {
@@ -233,4 +239,3 @@ class PostController extends Controller
         return response()->json($reactions);
     }
 }
-

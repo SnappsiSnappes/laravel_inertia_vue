@@ -2,7 +2,11 @@
 import { ref, computed, watch } from 'vue';
 import FlashMessage from '../Pages/Components/FlashMessage.vue';
 import { usePage } from '@inertiajs/vue3'; // Импортируем usePage
+
+
 const page = usePage();
+
+
 
 const props = defineProps({
     auth: Object,

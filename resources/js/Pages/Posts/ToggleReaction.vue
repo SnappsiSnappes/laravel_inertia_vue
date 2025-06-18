@@ -47,10 +47,11 @@ const toggleReaction = async (stickerId) => {
             'X-CSRF-TOKEN': page.props.csrf_token,
         });
 
-        const { message, type, removed } = response.data;
+        console.log(response.data);
+        const { message, removed } = response.data;
 
         // Обновляем флеш-сообщение
-        page.props.flash = { message, type };
+        page.props.flash.message = message;
 
         // Обновляем счётчик реакций
         if (removed) {
@@ -69,7 +70,7 @@ const toggleReaction = async (stickerId) => {
         }
     } catch (error) {
         console.error(error);
-        page.props.flash = { message: 'Произошла ошибка.', type: 'error' };
+        page.props.flash.message = { message: 'Произошла ошибка.', type: 'error' };
     }
 };
 

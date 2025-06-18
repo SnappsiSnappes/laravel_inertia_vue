@@ -76,8 +76,7 @@
 .blockquote {
     @apply border-l-4 border-slate-300 pl-4 italic text-slate-700;
 }
-.header-1,
-h1 {
+.header-1,h1 {
     @apply text-4xl font-bold text-center pt-5;
 }
 
@@ -149,4 +148,27 @@ h6 {
 
 .image.stretched img {
     @apply w-full h-auto rounded-md object-cover;
+}
+
+.editor-block {
+    margin-bottom: 1rem;
+}
+
+.code-block {
+    background-color: #f4f4f4;
+    padding: 1rem;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono';
+    font-size: 0.9rem;
+    overflow-x: auto;
+}
+
+.code-block code {
+    color: #333;
+    white-space: pre-wrap;
+}
+
+
+.PreviewDiv{
+    @apply py-8
 }

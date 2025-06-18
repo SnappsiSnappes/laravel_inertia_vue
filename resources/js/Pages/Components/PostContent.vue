@@ -1,13 +1,12 @@
 <script setup>
 import { computed } from 'vue';
+import ToggleReaction from '../Posts/ToggleReaction.vue';
 
 const props = defineProps({
     post: Object,
     IsAdmin: Boolean,
     authUser: Object,
 });
-
-
 
 
 // Разбор JSON-данных
@@ -37,12 +36,12 @@ console.log(props.post.body)
 
 <template>
     <p class="text-sm text-gray-500">{{ post.humanReadableDate }} by user <span class="underline">{{ post.user.email
-            }}</span></p>
+    }}</span></p>
 
     <div class="">
         <h1 class="py-10">{{ post.title }}</h1>
 
-        <div class="PreviewDiv" id="preview">
+        <div v-if="post.image" class="PreviewDiv" id="preview">
 
             <p>{{ post.preview_text }}</p>
             <div v-if="props.post.preview_image" class="image">
@@ -61,6 +60,11 @@ console.log(props.post.body)
             <div v-else-if="block.type === 'header'" :class="`header-${block.data.level}`">
                 {{ block.data.text }}
             </div>
+
+            <!-- Блок кода -->
+            <pre v-else-if="block.type === 'code'" class="code-block">
+                <code>{{ block.data.code }}</code>
+            </pre>
 
             <!-- Списки -->
             <div v-else-if="block.type === 'list'" class="list">
@@ -154,4 +158,7 @@ console.log(props.post.body)
 
         </div>
     </div>
+
+    <ToggleReaction :PostId="props.post.id" />
+
 </template>

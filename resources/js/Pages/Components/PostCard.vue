@@ -10,28 +10,25 @@ const props = defineProps({
     authUser: Object,
 });
 
-// Разбор JSON-данных
-const parsedBody = computed(() => {
-    try {
-        const ParsedBody = JSON.parse(props.post.body);
-        console.log('ParsedBody Body:', ParsedBody); // Логируем разобранный объект
-        return ParsedBody;
-    } catch (error) {
-        console.error('Error parsing post body:', error);
-        return { blocks: [] };
+
+// Метод для удаления поста
+const deletePost = (id) => {
+    if (confirm('Are you sure you want to delete this post?')) {
+        router.delete(route('posts.destroy', id), {
+            onSuccess: () => {
+                console.log('Post deleted successfully');
+            },
+            onError: () => {
+                console.error('Error deleting post');
+            },
+        });
     }
-});
-
-
-
-
-console.log(props.post)
+};
 </script>
 
 <template>
     <div>
-        <ToggleReaction :PostId="post.id" />
-        <h1 class="" >{{ post.title }}</h1>
+        <h1 class="header-1">{{ post.title }}</h1>
 
         <p class="text-sm text-gray-500">created {{ post.humanReadableDate }}</p>
         <p class="text-sm text-gray-500">by user {{ post.user.email }}</p>
@@ -49,7 +46,7 @@ console.log(props.post)
             </template>
         </div>
 
-        <div>
+        <div class="PreviewDiv">
             <p>{{ props.post.preview_text }}</p>
         </div>
 
@@ -57,24 +54,9 @@ console.log(props.post)
             <img width="200px" :src="props.post.preview_image" />
         </div>
 
+        
+        <ToggleReaction :PostId="post.id" />
+
     </div>
 </template>
 
-<script>
-export default {
-    methods: {
-        deletePost(id) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                router.delete(route('posts.destroy', id), {
-                    onSuccess: () => {
-                        console.log('Post deleted successfully');
-                    },
-                    onError: () => {
-                        console.error('Error deleting post');
-                    },
-                });
-            }
-        },
-    },
-};
-</script>

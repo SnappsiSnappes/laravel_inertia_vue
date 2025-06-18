@@ -9,6 +9,7 @@ const props = defineProps({
     authUser: Object,
 })
 
+
 </script>
 
 <template>
