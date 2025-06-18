@@ -42,10 +42,12 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard')->with('message', 'Greetings Sir!');
         }
+
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.'

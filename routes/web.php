@@ -53,6 +53,10 @@ Route::middleware('auth')->group(function () {
             ],
         ]);
     });
+
+    // Маршрут для реакций
+    Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
+    Route::get('/posts/{postId}/reactions', [PostController::class, 'getReactions'])->name('posts.reactions');
 });
 
 // Главная страница
@@ -65,5 +69,6 @@ Route::inertia('/about', 'About')->name('about');
 Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_users');
 
 
-// Маршруты для постов
+
+// Ресурсный маршрут
 Route::resource('posts', PostController::class);

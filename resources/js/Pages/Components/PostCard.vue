@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { PostCardHelper } from '../../Objects/PostCardHelper';
+import ToggleReaction from '../Posts/ToggleReaction.vue';
 
 const props = defineProps({
     post: Object,
@@ -23,23 +24,13 @@ const parsedBody = computed(() => {
 
 
 
-// Определение классов выравнивания
-const alignmentClass = (block) => {
-    switch (block.data.alignment) {
-        case 'center':
-            return 'text-center';
-        case 'right':
-            return 'text-right';
-        default:
-            return 'text-left';
-    }
-};
 
 console.log(props.post)
 </script>
 
 <template>
     <div>
+        <ToggleReaction :PostId="post.id" />
         <h1 class="" >{{ post.title }}</h1>
 
         <p class="text-sm text-gray-500">created {{ post.humanReadableDate }}</p>
