@@ -47,13 +47,12 @@ const deletePost = (id) => {
         </div>
 
         <div class="PreviewDiv">
-            <p>{{ props.post.preview_text }}</p>
-        </div>
+            <p>{{ post.preview_text }}</p>
 
-        <div v-if="props.post.preview_image" class="image">
-            <img width="200px" :src="props.post.preview_image" />
+            <div v-if="post.preview_image" class="image">
+                <img width="200px" :src="post.preview_image" />
+            </div>
         </div>
-
         
         <ToggleReaction :PostId="post.id" />
 

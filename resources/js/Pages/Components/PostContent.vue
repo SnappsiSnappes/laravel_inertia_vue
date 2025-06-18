@@ -31,7 +31,7 @@ const alignmentClass = (block) => {
     }
 };
 
-console.log(props.post.body)
+console.log(props.post)
 </script>
 
 <template>
@@ -39,15 +39,14 @@ console.log(props.post.body)
     }}</span></p>
 
     <div class="">
-        <h1 class="py-10">{{ post.title }}</h1>
+        <h1 class="py-10 header-3">{{ post.title }}</h1>
 
-        <div v-if="post.image" class="PreviewDiv" id="preview">
 
+        <div class="PreviewDiv contrast">
             <p>{{ post.preview_text }}</p>
-            <div v-if="props.post.preview_image" class="image">
-                <img width="200px" :src="props.post.preview_image" />
+            <div v-if="post.preview_image" class="image">
+                <img width="200px" :src="post.preview_image" />
             </div>
-
         </div>
 
 
