@@ -33,10 +33,6 @@ class PostController extends Controller
         $posts->each(function ($post) {
             // Добавляем человекочитаемую дату
             $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-
-            if ($post->preview_image !== null and $post->preview_image !== '') {
-                $post->preview_image = '/storage/' . $post->preview_image;
-            }
         });
 
 
@@ -74,7 +70,7 @@ class PostController extends Controller
 
         // Обработка загруженного изображения
         if ($request->hasFile('preview_image')) {
-            $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
+            $validated['preview_image'] = '/storage/' . $request->file('preview_image')->store('images', 'public');
         }
 
         // Создание поста с user_id
@@ -102,7 +98,7 @@ class PostController extends Controller
         $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
 
         if ($post->preview_image !== null and $post->preview_image !== '') {
-            $post->preview_image = '/storage/' . $post->preview_image;
+            // $post->preview_image = '/storage/' . $post->preview_image;
         }
 
 
@@ -135,46 +131,41 @@ class PostController extends Controller
      * Update the specified resource in storage.
      */
 
-public function update(UpdatePostRequest $request, Post $post)
-{
-    // Проверяем, может ли пользователь обновлять пост
-    if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
-        abort(403, 'Unauthorized action.');
-    }
-
-    // Валидация входящих данных
-    $validated = $request->validate([
-        'title' => ['required', 'string', 'max:255'],
-        'body' => ['required', 'string'],
-        'preview_text' => ['required', 'string', 'max:1000'],
-        'preview_image' => ['nullable', 'image', 'max:6000'], // Необязательное поле
-    ]);
-
-    // Обработка загруженного изображения
-    if ($request->hasFile('preview_image')) {
-        // Удаляем старое изображение, если оно существует
-        if ($post->preview_image) {
-            Storage::disk('public')->delete($post->preview_image);
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        // Проверяем, может ли пользователь обновлять пост
+        if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        // Сохраняем новое изображение
-        $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
-    } else {
-        // Если файл не загружен, сохраняем старое значение
-        $validated['preview_image'] = $post->preview_image;
+        // Валидация данных
+        $validated = $request->validated();
+
+
+        // Обработка загруженного изображения
+        if ($request->hasFile('preview_image')) {
+            // Удаляем старое изображение, если оно существует
+            if ($post->preview_image) {
+                Storage::disk('public')->delete($post->preview_image);
+            }
+            // Сохраняем новое изображение
+            $validated['preview_image'] =  '/storage/' . $request->file('preview_image')->store('images', 'public');
+        } else {
+            // Если файл не загружен, сохраняем старое значение
+            $validated['preview_image'] = $post->preview_image;
+        }
+
+        // Обновление поста
+        $post->update([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'preview_text' => $validated['preview_text'],
+            'preview_image' => $validated['preview_image'],
+        ]);
+
+        // Перенаправление с сообщением об успехе
+        return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
     }
-
-    // Обновление поста
-    $post->update([
-        'title' => $validated['title'],
-        'body' => $validated['body'],
-        'preview_text' => $validated['preview_text'],
-        'preview_image' => $validated['preview_image'],
-    ]);
-
-    // Перенаправление с сообщением об успехе
-    return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
-}
     /**
      * Remove the specified resource from storage.
      */

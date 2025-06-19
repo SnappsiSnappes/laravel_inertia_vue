@@ -14,18 +14,15 @@ const form = useForm({
     title: props.post.title || '',
     body: props.post.body || '',
     preview_text: props.post.preview_text || '',
-    preview_image: null, // Файл изображения
+    preview_image: props.post.preview_image, // Файл изображения
+    preview_image_url: props.post.preview_image, // URL для предпросмотра
+
 });
 
-// Отдельное состояние для предварительного просмотра изображения
-const preview_image_url = ref(props.post.preview_image || null);
 
 // Обработка сохранения
 const handleSave = async (editorData) => {
     form.body = JSON.stringify(editorData);
-
-    // Удаляем preview_image_url, так как оно нужно только для предпросмотра
-    delete form.preview_image_url;
 
     // Логируем данные перед отправкой
     console.log('Form data before submission:', form);
@@ -48,9 +45,6 @@ const AddFile = (e) => {
     if (file) {
         form.preview_image = file; // Добавляем файл в форму
         form.preview_image_url = URL.createObjectURL(file); // Создаем URL для предпросмотра
-    } else {
-        form.preview_image = null; // Очищаем поле, если файл не выбран
-        form.preview_image_url = props.post.preview_image || null; // Возвращаем старое изображение
     }
 };
 </script>
@@ -69,10 +63,9 @@ const AddFile = (e) => {
 
             <!-- Поле для загрузки изображения -->
             <label>Preview Image</label>
-            <img v-if="preview_image_url" :src="preview_image_url" class="object-cover w-28 h-28">
+            <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28">
             <input type="file" @input="AddFile" name="preview_image" class="mt-2">
             <small v-if="form.errors.preview_image" class="error">{{ form.errors.preview_image }}</small>
-
 
 
             <!-- Поле для заголовка -->
