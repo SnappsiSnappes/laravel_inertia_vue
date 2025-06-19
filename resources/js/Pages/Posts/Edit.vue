@@ -1,5 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
 import TextInput from '../Components/TextInput.vue';
 import Editor from '../Components/EditorJs.vue'; // Импортируем новый компонент
 
@@ -7,33 +9,50 @@ const props = defineProps({
     post: Object,
 });
 
+// Инициализация формы
 const form = useForm({
-    title: props.post.title,
-    body: props.post.body,
-    preview_text: props.post.preview_text,
-    preview_image: props.post.preview_image, // Файл изображения
-    preview_image_url: props.post.preview_image, // URL для предпросмотра
-
+    title: props.post.title || '',
+    body: props.post.body || '',
+    preview_text: props.post.preview_text || '',
+    preview_image: null, // Файл изображения
 });
 
-const handleSave = (editorData) => {
+// Отдельное состояние для предварительного просмотра изображения
+const preview_image_url = ref(props.post.preview_image || null);
+
+// Обработка сохранения
+const handleSave = async (editorData) => {
     form.body = JSON.stringify(editorData);
-    form.put(route('posts.update', props.post.id), {
+
+    // Удаляем preview_image_url, так как оно нужно только для предпросмотра
+    delete form.preview_image_url;
+
+    // Логируем данные перед отправкой
+    console.log('Form data before submission:', form);
+
+    // Отправляем форму через POST
+    form.post(route('posts.update', props.post.id), {
         preserveScroll: true,
+        onSuccess: () => {
+            console.log('Post updated successfully');
+        },
         onError: (errors) => {
-            console.error('Errors:', errors);
+            console.error('Validation errors:', errors);
         },
     });
 };
+
 // Обработка загрузки изображения
 const AddFile = (e) => {
     const file = e.target.files[0];
     if (file) {
         form.preview_image = file; // Добавляем файл в форму
         form.preview_image_url = URL.createObjectURL(file); // Создаем URL для предпросмотра
+    } else {
+        form.preview_image = null; // Очищаем поле, если файл не выбран
+        form.preview_image_url = props.post.preview_image || null; // Возвращаем старое изображение
     }
 };
-
 </script>
 
 <template>
@@ -50,7 +69,7 @@ const AddFile = (e) => {
 
             <!-- Поле для загрузки изображения -->
             <label>Preview Image</label>
-            <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28">
+            <img v-if="preview_image_url" :src="preview_image_url" class="object-cover w-28 h-28">
             <input type="file" @input="AddFile" name="preview_image" class="mt-2">
             <small v-if="form.errors.preview_image" class="error">{{ form.errors.preview_image }}</small>
 

@@ -1,0 +1,17 @@
+.image,
+.image-tool__image-picture {
+    @apply flex justify-center items-center overflow-hidden max-w-full max-h-[500px] mx-auto my-4;
+}
+
+.image img {
+    @apply max-w-full max-h-[500px] rounded-md object-cover;
+}
+/* Добавляем стили для растянутых изображений */
+.image.stretched {
+    @apply w-full;
+}
+
+.image.stretched img {
+    @apply w-full h-auto rounded-md object-cover;
+}
+

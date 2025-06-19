@@ -1,0 +1,14 @@
+
+.code-block {
+    background-color: #f4f4f4;
+    padding: 1rem;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono';
+    font-size: 0.9rem;
+    overflow-x: auto;
+}
+
+.code-block code {
+    color: #333;
+    white-space: pre-wrap;
+}

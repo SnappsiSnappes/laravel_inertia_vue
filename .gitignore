@@ -20,3 +20,4 @@ yarn-error.log
 /.zed
 storage/app/public/avatars
 storage/app/public/images
+/.TODO

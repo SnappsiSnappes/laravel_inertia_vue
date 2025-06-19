@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 
+
     // Маршрут для реакций
     Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
     
@@ -71,5 +72,8 @@ Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_use
 
 
 
-// Ресурсный маршрут
-Route::resource('posts', PostController::class);
+// Ресурсные маршруты с переопределением update
+Route::resource('posts', PostController::class)->except(['update']);
+
+// Добавляем отдельный маршрут для обновления через POST
+Route::post('/posts/{post}', [PostController::class, 'update'])->name('posts.update');

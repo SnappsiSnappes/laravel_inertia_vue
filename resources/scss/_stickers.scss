@@ -1,8 +1,13 @@
 .stickers{
 }
 
-.SingleSticker{
-    font-size: 3rem;
+.SingleSticker {
+    font-size: 2.3rem;
+    transition: all 0.5s ; /* Плавный переход всех свойств */
+}
+
+.SingleSticker:hover {
+    background-color: brown;
 }
 
 .StickerActive{

@@ -17,6 +17,12 @@ import ColorPicker from 'editorjs-color-picker';
 import Underline from '@editorjs/underline';
 import Warning from '@editorjs/warning';
 import Marker from '@editorjs/marker';
+import TextVariantTune from '@editorjs/text-variant-tune';
+import Annotation from 'editorjs-annotation';
+import AttachesTool from '@editorjs/attaches';
+import Sortable from 'sortablejs';
+import ImageGallery from '@kiberpro/editorjs-gallery';
+
 
 // Доступ к данным страницы
 const page = usePage();
@@ -38,6 +44,21 @@ onMounted(() => {
     editor.value = new EditorJS({
         holder: 'editorjs',
         tools: {
+            gallery: {
+                class: ImageGallery,
+                config: {
+                    sortableJs: Sortable,
+                    endpoints: {
+                        byFile: '/upload-image',
+                    },
+                    additionalRequestHeaders: {
+                        'X-CSRF-TOKEN': page.props.csrf_token,
+                    },
+                },
+            },
+
+            textVariant: TextVariantTune,
+
             Marker: {
                 class: Marker,
 
@@ -56,7 +77,9 @@ onMounted(() => {
 
             paragraph: {
                 inlineToolbar: true,
+                class: paragraph,
             },
+            annotation: Annotation,
 
             header: Header,
             list: List,
@@ -75,7 +98,20 @@ onMounted(() => {
             table: Table,
             delimiter: Delimiter,
             embed: Embed,
+            attaches: {
+                class: AttachesTool,
+                config: {
+                    endpoint: '/upload-image',
+                    additionalRequestHeaders: {
+                        'X-CSRF-TOKEN': page.props.csrf_token,
+                    },
+
+                }
+            },
+
         },
+        tunes: ['textVariant'],
+
         data: props.initialData,
     });
 });

@@ -32,7 +32,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect
-        return redirect()->route('dashboard')->with('message', 'Greetings Sir!');
+        return redirect()->route('dashboard')->with('message', ['message'=>'Greetings Sir!','type'=>'success']);
     }
 
     public function login(Request $request)
@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->with('message', 'Greetings Sir!');
+            return redirect()->intended('dashboard')->with('message', ['message'=>'Greetings Sir!','type'=>'success']);
         }
 
 
@@ -101,7 +101,7 @@ class AuthController extends Controller
 
         $user->save();
 
-        return redirect()->route('edit')->with('message', 'Account updated successfuly!');
+        return redirect()->route('edit')->with('message', ['message'=>'Account updated successfuly!','type'=>'success']);
     }
 
 

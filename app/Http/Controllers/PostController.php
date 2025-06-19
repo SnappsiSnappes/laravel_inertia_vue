@@ -33,10 +33,12 @@ class PostController extends Controller
         $posts->each(function ($post) {
             // Добавляем человекочитаемую дату
             $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-            $post->preview_image != null
-                ? '/storage/' . $post->preview_image
-                : null;
+
+            if ($post->preview_image !== null and $post->preview_image !== '') {
+                $post->preview_image = '/storage/' . $post->preview_image;
+            }
         });
+
 
         return inertia('Posts/Posts', [
             'posts' => $posts,
@@ -98,7 +100,11 @@ class PostController extends Controller
 
         // Format the date for better readability
         $post->humanReadableDate = Carbon::parse($post->created_at)->diffForHumans();
-        $post->preview_image = '/storage/' . $post->preview_image;
+
+        if ($post->preview_image !== null and $post->preview_image !== '') {
+            $post->preview_image = '/storage/' . $post->preview_image;
+        }
+
 
         // Return the post data to the frontend
         return inertia('Posts/Show', [
@@ -128,34 +134,47 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, Post $post)
-    {
 
-        // Проверяем, может ли пользователь обновлять пост
-        if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Валидация данных (уже выполнена через UpdatePostRequest)
-        $validated = $request->validated();
-
-
-        // Обработка загруженного изображения
-        if ($request->hasFile('preview_image')) {
-            $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
-        }
-
-        // Обновление поста
-        $post->update([
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-            'preview_text' => $validated['preview_text'] ?? $post->preview_text, // Если preview_text не передан, оставляем старое значение
-            'preview_image' => $validated['preview_image'] ?? $post->preview_image, // Если изображение не загружено, оставляем старое
-        ]);
-
-        // Перенаправление с сообщением об успехе
-        return redirect()->route('posts.show', $post)->with('message',  ['message' => 'Пост обновлен', 'type' => 'success']);
+public function update(UpdatePostRequest $request, Post $post)
+{
+    // Проверяем, может ли пользователь обновлять пост
+    if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
+        abort(403, 'Unauthorized action.');
     }
+
+    // Валидация входящих данных
+    $validated = $request->validate([
+        'title' => ['required', 'string', 'max:255'],
+        'body' => ['required', 'string'],
+        'preview_text' => ['required', 'string', 'max:1000'],
+        'preview_image' => ['nullable', 'image', 'max:6000'], // Необязательное поле
+    ]);
+
+    // Обработка загруженного изображения
+    if ($request->hasFile('preview_image')) {
+        // Удаляем старое изображение, если оно существует
+        if ($post->preview_image) {
+            Storage::disk('public')->delete($post->preview_image);
+        }
+
+        // Сохраняем новое изображение
+        $validated['preview_image'] = $request->file('preview_image')->store('images', 'public');
+    } else {
+        // Если файл не загружен, сохраняем старое значение
+        $validated['preview_image'] = $post->preview_image;
+    }
+
+    // Обновление поста
+    $post->update([
+        'title' => $validated['title'],
+        'body' => $validated['body'],
+        'preview_text' => $validated['preview_text'],
+        'preview_image' => $validated['preview_image'],
+    ]);
+
+    // Перенаправление с сообщением об успехе
+    return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
+}
     /**
      * Remove the specified resource from storage.
      */
