@@ -4,17 +4,8 @@
 }
 
 .image img {
-    @apply max-w-full max-h-[500px] rounded-md object-cover;
+    @apply max-w-full max-h-[500px] rounded-md object-cover overflow-hidden;
 }
-/* Добавляем стили для растянутых изображений */
-.image.stretched {
-    @apply w-full;
-}
-
-.image.stretched img {
-    @apply w-full h-auto rounded-md object-cover;
-}
-
 
 .avatar {
     @apply w-8 h-8 rounded-full overflow-hidden object-center object-cover;

@@ -2,6 +2,8 @@
 import { computed, onMounted } from 'vue';
 import ToggleReaction from '../Posts/ToggleReaction.vue';
 import Gallery from './ArticleBlocks/Gallery.vue';
+import Image from './ArticleBlocks/Image.vue';
+
 
 const props = defineProps({
     post: Object,
@@ -40,7 +42,7 @@ console.log(props.post)
 
 <template>
     <p class="text-sm text-gray-500">{{ post.humanReadableDate }} by user <span class="underline">{{ post.user.email
-    }}</span></p>
+            }}</span></p>
 
     <div class="">
         <h1 class="py-10 header-3">{{ post.title }}</h1>
@@ -91,11 +93,8 @@ console.log(props.post)
             </div>
 
             <!-- Изображения -->
-            <div v-else-if="block.type === 'image'" class="image" :class="{ 'stretched': block.data.stretched }">
-                <img :src="block.data.file.url" :alt="block.data.caption" />
-                <p v-if="block.data.caption" class="text-sm text-slate-500 mt-2 text-center">
-                    {{ block.data.caption }}
-                </p>
+            <div v-else-if="block.type === 'image'" class="image">
+                <Image :ImageUrl="block.data.file.url" :caption="block.data.caption" />
             </div>
 
             <!-- Галерея -->
