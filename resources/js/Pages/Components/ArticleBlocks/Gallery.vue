@@ -62,21 +62,9 @@ onMounted(async () => {
     <div class="gallery-div">
         <!-- Галерея -->
         <div id="gallery" class="gallery">
-            <a
-                v-for="(file, index) in imagesWithSizes"
-                :key="index"
-                :href="file.url"
-                :data-pswp-width="file.width"
-                :data-pswp-height="file.height"
-                class="gallery-item"
-                target="_blank"
-                rel="noreferrer"
-            >
-                <img
-                    :src="file.url"
-                    :alt="caption || 'Gallery image'"
-                    class="gallery-image"
-                />
+            <a v-for="(file, index) in imagesWithSizes" :key="index" :href="file.url" :data-pswp-width="file.width"
+                :data-pswp-height="file.height" class="gallery-item" target="_blank" rel="noreferrer">
+                <img :src="file.url" :alt="caption || 'Gallery image'" class="gallery-image" />
             </a>
         </div>
 
@@ -89,8 +77,10 @@ onMounted(async () => {
 
 <style scoped>
 .gallery-div {
-    margin: 20px 0;
+    @apply w-full max-w-[50rem] mx-auto rounded-lg;
+    /* 800px = 50rem */
 }
+
 
 .gallery {
     display: flex;
