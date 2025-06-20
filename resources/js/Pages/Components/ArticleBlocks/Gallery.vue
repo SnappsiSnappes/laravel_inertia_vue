@@ -1,26 +1,58 @@
 <script setup>
-import { onMounted } from 'vue';
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import 'photoswipe/style.css';
+import { onMounted, ref } from "vue";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
+import "photoswipe/style.css";
 
 const props = defineProps({
     files: Array, // Массив изображений
     caption: String, // Подпись галереи
 });
 
+// Реактивный массив для хранения данных изображений с размерами
+const imagesWithSizes = ref([]);
+
+// Функция для загрузки изображений и получения их размеров
+const loadImagesWithSizes = async () => {
+    if (!Array.isArray(props.files)) {
+        console.warn("Files prop is not an array. Using empty array as fallback.");
+        return;
+    }
+
+    const loadedImages = await Promise.all(
+        props.files.map(async (file) => {
+            const img = new Image();
+            img.src = file.url;
+
+            // Ждем загрузки изображения
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            // Возвращаем данные изображения с реальными размерами
+            return {
+                ...file,
+                width: img.naturalWidth, // Реальная ширина изображения
+                height: img.naturalHeight, // Реальная высота изображения
+            };
+        })
+    );
+
+    // Обновляем реактивный массив
+    imagesWithSizes.value = loadedImages;
+};
+
 // Инициализация PhotoSwipe
-onMounted(() => {
+onMounted(async () => {
+    await loadImagesWithSizes();
+
     const lightbox = new PhotoSwipeLightbox({
-    gallery: '#gallery',
-    children: 'a',
-    pswpModule: () => import('photoswipe'),
-    // showAnimationDuration: 333, // Длительность анимации открытия
-    // hideAnimationDuration: 333, // Длительность анимации закрытия
-        showHideAnimationType: 'none', // Отключаем анимацию открытия/закрытия
+        gallery: "#gallery",
+        children: "a",
+        pswpModule: () => import("photoswipe"),
+        showHideAnimationType: "zoom", // Анимация открытия/закрытия
         closeOnScroll: false, // Не закрывать при прокрутке страницы
         wheelToZoom: true, // Разрешить зум колесиком мыши
-
-
     });
     lightbox.init();
 });
@@ -30,11 +62,21 @@ onMounted(() => {
     <div class="gallery-div">
         <!-- Галерея -->
         <div id="gallery" class="gallery">
-            <a v-for="(file, index) in files" :key="index" :href="file.url" :data-pswp-width="800"
-                :data-pswp-height="600" class="gallery-item">
-                <img :src="file.url" :alt="caption || 'Gallery image'" class="gallery-image" 
+            <a
+                v-for="(file, index) in imagesWithSizes"
+                :key="index"
+                :href="file.url"
+                :data-pswp-width="file.width"
+                :data-pswp-height="file.height"
+                class="gallery-item"
+                target="_blank"
+                rel="noreferrer"
+            >
+                <img
+                    :src="file.url"
+                    :alt="caption || 'Gallery image'"
+                    class="gallery-image"
                 />
-                
             </a>
         </div>
 
