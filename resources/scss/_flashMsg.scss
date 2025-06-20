@@ -1,4 +1,4 @@
-.flash-message {
+.flash-div {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -13,7 +13,7 @@
     min-width: 250px;
 }
 
-.close-button {
+.flash-close-button {
     background: none;
     border: none;
     color: white;
@@ -22,14 +22,14 @@
     margin-left: 10px;
 }
 
-.success {
+.flash-success {
     background-color: #28a745;
 }
 
-.error {
+.flash-error {
     background-color: #dc3545;
 }
 
-.info {
+.flash-info {
     background-color: #17a2b8;
 }

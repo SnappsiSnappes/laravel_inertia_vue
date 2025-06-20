@@ -1,8 +1,8 @@
 <template>
-    <div v-if="message.message" class="flash-message" :class="message.type">
+    <div v-if="message.message" class="flash-div" :class="'flash-'+message.type">
         <span>{{ message.message }}</span>
         <span v-if="remainingTime > 0" class="ps-5">{{ remainingTime }}</span>
-        <button class="close-button" @click="closeMessage">×</button>
+        <button class="flash-close-button" @click="closeMessage">×</button>
     </div>
 </template>
 
