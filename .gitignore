@@ -24,3 +24,5 @@ storage/app/public/images
 TODO
 prompt.md
 question.md
+/public/storage/images
+/public/storage/avatars
