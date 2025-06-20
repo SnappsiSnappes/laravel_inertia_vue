@@ -5,7 +5,7 @@ import TextInput from '../Components/TextInput.vue'
 const form = useForm({
     email: null,
     password: null,
-    remember: null
+    remember: false
 })
 
 const submit = () => {

@@ -1,5 +1,4 @@
 import './bootstrap';
-// import '../css/app.css';
 import '../scss/main.scss';
 import { createApp, h } from 'vue'
 import { createInertiaApp , Head, Link} from '@inertiajs/vue3'

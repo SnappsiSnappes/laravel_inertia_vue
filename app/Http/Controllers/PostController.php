@@ -190,8 +190,7 @@ class PostController extends Controller
         // Проверяем, авторизован ли пользователь
         if (!auth()->check()) {
             return response()->json([
-                'message' => 'Вы должны быть авторизованы, чтобы добавить реакцию.',
-                'type' => 'error',
+                'message' => ['message' => 'Вы должны быть авторизованы, чтобы добавить реакцию.', 'type' => 'error'],
             ], 401);
         }
 

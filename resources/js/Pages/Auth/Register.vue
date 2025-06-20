@@ -16,7 +16,6 @@ const submit = () => {
     form.post(route('register'), {
         preserveScroll: true,
         onError: () => {
-            router.visit(route('home'), { replace: true, preserveState: false }); // preserveState: false - making page to reload
         }
     })
 }

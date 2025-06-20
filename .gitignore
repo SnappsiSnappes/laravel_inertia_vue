@@ -21,3 +21,6 @@ yarn-error.log
 storage/app/public/avatars
 storage/app/public/images
 /.TODO
+TODO
+prompt.md
+question.md

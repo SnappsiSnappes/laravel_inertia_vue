@@ -6,6 +6,8 @@ use App\Models\User;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -32,7 +34,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect
-        return redirect()->route('dashboard')->with('message', ['message'=>'Greetings Sir!','type'=>'success']);
+        return redirect()->route('dashboard')->with('message', ['message' => 'Greetings Sir!', 'type' => 'success']);
     }
 
     public function login(Request $request)
@@ -43,9 +45,10 @@ class AuthController extends Controller
         ]);
 
 
+
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->with('message', ['message'=>'Greetings Sir!','type'=>'success']);
+            return redirect()->intended('dashboard')->with('message', ['message' => 'Greetings Sir!', 'type' => 'success']);
         }
 
 
@@ -101,22 +104,22 @@ class AuthController extends Controller
 
         $user->save();
 
-        return redirect()->route('edit')->with('message', ['message'=>'Account updated successfuly!','type'=>'success']);
+        return redirect()->route('edit')->with('message', ['message' => 'Account updated successfuly!', 'type' => 'success']);
     }
 
 
-public function logout(Request $request)
-{
-    // Invalidate session and regenerate token
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    public function logout(Request $request)
+    {
+        // Invalidate session and regenerate token
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    // Logout user
-    Auth::logout();
+        // Logout user
+        Auth::logout();
 
-    // Redirect to home with updated props
-    return redirect()->route('home')->with('auth', null);
-}
+        // Redirect to home with updated props
+        return redirect()->route('home')->with('auth', null);
+    }
 
     public function delete_user(Request $request)
     {
@@ -141,14 +144,14 @@ public function logout(Request $request)
         $users = User::when($request->search, function ($query) use ($request) {
             $query->where('name', 'like', '%' . $request->search . '%');
         })->paginate(9)->withQueryString();
-    
-        
+
+
         // Determine if the current user can delete other users
         $canDeleteUser = null;
         if (Auth::user()) {
             $canDeleteUser = Auth::user()->can('delete', User::class);
         }
-    
+
         return Inertia('AllUsers', [
             'users' => $users,
             'searchTerm' => $request->search,
@@ -157,4 +160,4 @@ public function logout(Request $request)
             ]
         ]);
     }
-    }
+}

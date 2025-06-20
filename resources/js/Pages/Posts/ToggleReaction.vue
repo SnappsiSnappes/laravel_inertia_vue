@@ -36,7 +36,7 @@ const reactionCounts = ref({});
 
 const toggleReaction = async (stickerId) => {
     if (!page.props.auth.user) {
-        page.props.flash = { message: 'Вы должны быть авторизованы, чтобы добавить реакцию.', type: 'error' };
+        page.props.flash = { message: { message: 'Вы должны быть авторизованы, чтобы добавить реакцию.', type: 'error' } };
         return;
     }
 
