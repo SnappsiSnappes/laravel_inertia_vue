@@ -74,7 +74,7 @@ onMounted(async () => {
 
 /* Контейнер для изображения */
 .image-div {
-    @apply w-full max-w-[35rem] mx-auto overflow-hidden rounded-lg shadow-md; /* 800px = 50rem */
+    @apply w-full max-w-[35rem] min-w-[20rem] mx-auto overflow-hidden rounded-lg shadow-md; /* 800px = 50rem */
 }
 
 /* Ссылка с изображением */

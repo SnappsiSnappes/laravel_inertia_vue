@@ -61,7 +61,7 @@ onMounted(async () => {
 <template>
     <div class="gallery-div">
         <!-- Галерея -->
-        <div id="gallery" class="gallery">
+        <div id="gallery" class="gallery-main-div">
             <a v-for="(file, index) in imagesWithSizes" :key="index" :href="file.url" :data-pswp-width="file.width"
                 :data-pswp-height="file.height" class="gallery-item" target="_blank" rel="noreferrer">
                 <img :src="file.url" :alt="caption || 'Gallery image'" class="gallery-image" />
@@ -82,11 +82,12 @@ onMounted(async () => {
 }
 
 
-.gallery {
+.gallery-main-div {
     display: flex;
     gap: 10px;
     /* overflow-x: auto; */
     padding: 10px 0;
+    justify-content: center
 }
 
 .gallery-item {
