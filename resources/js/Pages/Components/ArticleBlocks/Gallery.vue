@@ -75,27 +75,33 @@ onMounted(async () => {
     </div>
 </template>
 
-<style scoped>
-.gallery-div {
-    @apply w-full max-w-[50rem] mx-auto rounded-lg;
-    /* 800px = 50rem */
+<style scoped>.gallery-div {
+    @apply w-full max-w-[50rem] mx-auto rounded-lg overflow-hidden;
+    /* Максимальная ширина контейнера (800px = 50rem) */
 }
-
 
 .gallery-main-div {
     display: flex;
-    gap: 10px;
-    /* overflow-x: auto; */
-    padding: 10px 0;
-    justify-content: center
+    flex-wrap: wrap; /* Разрешаем перенос строк */
+    gap: 1rem; /* Устанавливаем расстояние между элементами */
+    padding: 1rem; /* Добавляем внутренний отступ */
+    justify-content: center; /* Центрируем элементы */
 }
 
 .gallery-item {
     flex: 0 0 auto;
-    width: 200px;
-    height: 200px;
+    width: calc(33% - 2rem); /* Каждое изображение занимает ~33% ширины контейнера */
+    height: 200px; /* Фиксированная высота */
     position: relative;
     cursor: pointer;
+
+    @media (max-width: 768px) {
+        width: calc(50% - 1rem); /* На маленьких экранах — 2 изображения в ряд */
+    }
+
+    @media (max-width: 480px) {
+        width: 100%; /* На очень маленьких экранах — 1 изображение в ряд */
+    }
 
     .gallery-image {
         width: 100%;
@@ -109,5 +115,4 @@ onMounted(async () => {
             transform: scale(1.05);
         }
     }
-}
-</style>
+}</style>
