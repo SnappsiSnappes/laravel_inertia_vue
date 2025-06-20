@@ -11,3 +11,13 @@
 .custom-link:hover::after {
     @apply w-full;
 }
+
+/* класс для ссылок */
+.paragraph > a,
+.content > a {
+    @apply custom-link;
+}
+
+.text-link {
+    @apply font-semibold text-blue-500 hover:text-blue-600;
+}

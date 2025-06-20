@@ -1,0 +1,15 @@
+table {
+    @apply w-full text-sm text-left rounded-md shadow-lg overflow-hidden mb-6 table-auto bg-white;
+}
+thead {
+    @apply text-xs uppercase font-medium border-b border-slate-100 text-slate-600;
+}
+tbody tr {
+    @apply hover:bg-slate-100 w-full p-0;
+}
+th {
+    @apply px-6 py-4;
+}
+td {
+    @apply px-6 py-4 border-b border-slate-100;
+}
