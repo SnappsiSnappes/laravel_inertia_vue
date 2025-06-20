@@ -43,12 +43,15 @@
         "editorjs-style": "^3.0.3",
         "editorjs-text-alignment-blocktune": "^1.0.3",
         "gsap": "^3.13.0",
+        "lightgallery": "^2.9.0-beta.1",
         "lodash": "^4.17.21",
+        "photoswipe": "^5.4.4",
         "pinia": "^3.0.3",
         "prismjs": "^1.30.0",
         "sass-migrator": "^2.3.2",
         "sortablejs": "^1.15.6",
         "vue": "^3.5.9",
-        "vue-router": "^4.5.1"
+        "vue-router": "^4.5.1",
+        "vueperslides": "^3.6.0"
     }
 }

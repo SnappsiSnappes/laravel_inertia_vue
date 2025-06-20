@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import ToggleReaction from '../Posts/ToggleReaction.vue';
+import Gallery from './ArticleBlocks/Gallery.vue';
 
 const props = defineProps({
     post: Object,
@@ -31,6 +32,9 @@ const alignmentClass = (block) => {
     }
 };
 
+onMounted(() => {
+
+});
 console.log(props.post)
 </script>
 
@@ -94,21 +98,26 @@ console.log(props.post)
                 </p>
             </div>
 
+            <!-- Галерея -->
+            <div v-else-if="block.type === 'gallery'">
+                <Gallery :files="block.data.files" :caption="block.data.caption" />
+            </div>
+
+
             <!-- Warning блок -->
-            <div v-else-if="block.type === 'warning'"
-                class="warning-block relative bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+            <div v-else-if="block.type === 'warning'" class="warning-div">
                 <!-- Иконка предупреждения -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-4 left-4 w-8 h-8 text-yellow-500 opacity-75"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="warning-icon" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
 
                 <!-- Заголовок (если есть) -->
-                <strong v-if="block.data.title" class="block font-bold mb-2 pl-16">{{ block.data.title }}</strong>
+                <strong v-if="block.data.title" class="warning-title">{{ block.data.title }}</strong>
 
                 <!-- Сообщение -->
-                <p class="text-gray-800 pl-16">{{ block.data.message }}</p>
+                <p class="warning-p">{{ block.data.message }}</p>
             </div>
 
 

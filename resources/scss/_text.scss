@@ -41,3 +41,18 @@ h6 {
 header {
     @apply bg-slate-800 shadow-md;
 }
+
+.warning-div{
+    @apply  relative bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg;
+}
+
+.warning-title{
+   @apply block font-bold mb-2 pl-16 ;
+}
+
+.warning-p{
+    @apply text-gray-800 pl-16;
+}
+.warning-icon{
+    @apply absolute top-4 left-4 w-8 h-8 text-yellow-500 opacity-75;
+}
