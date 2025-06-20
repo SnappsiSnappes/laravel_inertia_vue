@@ -95,7 +95,7 @@ onMounted(async () => {
 .gallery {
     display: flex;
     gap: 10px;
-    overflow-x: auto;
+    /* overflow-x: auto; */
     padding: 10px 0;
 }
 
