@@ -14,11 +14,9 @@ const form = useForm({
     title: props.post.title || '',
     body: props.post.body || '',
     preview_text: props.post.preview_text || '',
-    preview_image: props.post.preview_image, // Файл изображения
-    preview_image_url: props.post.preview_image, // URL для предпросмотра
-
+    preview_image: null, // Файл изображения
+    preview_image_url: props.post.preview_image || null, // URL для предпросмотра
 });
-
 
 // Обработка сохранения
 const handleSave = async (editorData) => {
@@ -35,6 +33,12 @@ const handleSave = async (editorData) => {
         },
         onError: (errors) => {
             console.error('Validation errors:', errors);
+
+            // Если есть ошибка валидации для preview_image, очищаем данные
+            if (errors.preview_image) {
+                form.preview_image = null;
+                form.preview_image_url = null;
+            }
         },
     });
 };
@@ -50,23 +54,19 @@ const AddFile = (e) => {
 </script>
 
 <template>
-
     <Head :title="`${$page.component}`" />
     <div class="w-2/4 mx-auto">
         <h1>Edit Post</h1>
 
         <form @submit.prevent="$refs.editor.save()">
-
-
             <!-- Поле для preview_text -->
             <TextInput name="Preview Text" v-model="form.preview_text" :message="form.errors.preview_text" />
 
             <!-- Поле для загрузки изображения -->
             <label>Preview Image</label>
-            <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28">
-            <input type="file" @input="AddFile" name="preview_image" class="mt-2">
+            <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28" />
+            <input type="file" @input="AddFile" name="preview_image" class="mt-2" />
             <small v-if="form.errors.preview_image" class="error">{{ form.errors.preview_image }}</small>
-
 
             <!-- Поле для заголовка -->
             <TextInput name="Title" v-model="form.title" :message="form.errors.title" />
