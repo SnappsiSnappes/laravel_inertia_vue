@@ -54,14 +54,11 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 
-
-
+    Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
 });
 
-    // Маршрут для реакций
-    Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
-    
-    Route::get('/posts/{postId}/reactions', [PostController::class, 'getReactions'])->name('posts.reactions');
+
+Route::get('/posts/{postId}/reactions', [PostController::class, 'getReactions'])->name('posts.reactions');
 
 // Главная страница
 Route::inertia('/', 'Home')->name('home');

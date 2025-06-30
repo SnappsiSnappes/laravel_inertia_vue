@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 import ToggleReaction from '../Posts/ToggleReaction.vue';
 import Gallery from './ArticleBlocks/Gallery.vue';
 import Image from './ArticleBlocks/Image.vue';
+import List from './ArticleBlocks/List.vue';
 
 
 const props = defineProps({
@@ -45,10 +46,10 @@ console.log(props.post)
             }}</span></p>
 
     <div class="">
-        <h1 class="py-10 header-3">{{ post.title }}</h1>
+        <h1 class=" header-3">{{ post.title }}</h1>
 
 
-        <div class="PreviewDiv contrast">
+        <div class="PreviewDiv contrast my-10">
             <p>{{ post.preview_text }}</p>
             <div v-if="post.preview_image" class="image">
                 <img width="200px" :src="post.preview_image" />
@@ -56,7 +57,7 @@ console.log(props.post)
         </div>
 
 
-        <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
+        <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block),]">
 
             <!-- Параграф -->
             <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
@@ -73,23 +74,7 @@ console.log(props.post)
 
             <!-- Списки -->
             <div v-else-if="block.type === 'list'" class="list">
-                <!-- Чек-лист -->
-                <ul v-if="block.data.style === 'checklist'">
-                    <li v-for="(item, idx) in block.data.items" :key="idx" class="flex items-center">
-                        <input type="checkbox" :checked="item.meta?.checked" disabled class="mr-2" />
-                        <span>{{ item.content }}</span>
-                    </li>
-                </ul>
-
-                <!-- Маркированный список -->
-                <ul v-else-if="block.data.style === 'unordered'">
-                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item.content }}</li>
-                </ul>
-
-                <!-- Нумерованный список -->
-                <ol v-else>
-                    <li v-for="(item, idx) in block.data.items" :key="idx">{{ item.content }}</li>
-                </ol>
+                <List :BlockData="block.data"/>
             </div>
 
             <!-- Изображения -->
