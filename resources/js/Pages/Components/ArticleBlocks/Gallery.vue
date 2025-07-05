@@ -11,18 +11,55 @@ const props = defineProps({
 // Реактивный массив для хранения данных изображений с размерами
 const imagesWithSizes = ref([]);
 
-onMounted(() => {
+// если нет width то можно использовать это
+const loadImagesWithSizes = async () => {
+    if (!Array.isArray(props.files)) {
+        console.warn("Files prop is not an array. Using empty array as fallback.");
+        return;
+    }
+
+    const loadedImages = await Promise.all(
+        props.files.map(async (file) => {
+            const img = new Image();
+            img.src = file.url;
+
+            // Ждем загрузки изображения
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            // Возвращаем данные изображения с реальными размерами
+            return {
+                ...file,
+                width: img.naturalWidth, // Реальная ширина изображения
+                height: img.naturalHeight, // Реальная высота изображения
+            };
+        })
+    );
+
+    // Обновляем реактивный массив
+    imagesWithSizes.value = loadedImages;
+};
+
+
+onMounted(async () => {
+
     if (!Array.isArray(props.files)) {
         console.warn("Files prop is not an array. Using empty array as fallback.");
         imagesWithSizes.value = [];
         return;
     }
 
+
+    // await loadImagesWithSizes();
     // Используем данные напрямую из props.files
     imagesWithSizes.value = props.files.map((file) => ({
         ...file,
-        width: file.width || 800, // Если ширина не указана, используем значение по умолчанию
-        height: file.height || 600, // Если высота не указана, используем значение по умолчанию
+         // Если ширина не указана, используем значение по умолчанию
+        width: file.width || 800,
+        // Если высота не указана, используем значение по умолчанию
+        height: file.height || 600, 
     }));
 
     const lightbox = new PhotoSwipeLightbox({

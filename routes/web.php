@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 // Гости
@@ -37,26 +37,33 @@ Route::middleware('auth')->group(function () {
         return request()->user()->only('id', 'name', 'avatar', 'email');
     });
 
-
-
     Route::post('/upload-image', function (Request $request) {
-        if (!$request->hasFile('image')) {
+        if (! $request->hasFile('image')) {
             return response()->json(['error' => 'No file uploaded'], 400);
         }
+        // Получаем загруженный файл
+        $file = $request->file('image');
 
         $path = $request->file('image')->store('images', 'public');
 
+        // Получаем размеры изображения
+        $dimensions = getimagesize($file->getRealPath());
+        $width      = $dimensions[0];
+        $height     = $dimensions[1];
+
         return response()->json([
             'success' => 1,
-            'file' => [
-                'url' => Storage::disk('public')->url($path),
+            'file'    => [
+                'url'    => Storage::disk('public')->url($path),
+                'width'  => $width,
+                'height' => $height,
+
             ],
         ]);
     });
 
     Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
 });
-
 
 Route::get('/posts/{postId}/reactions', [PostController::class, 'getReactions'])->name('posts.reactions');
 
@@ -68,8 +75,6 @@ Route::inertia('/about', 'About')->name('about');
 
 // Показать всех пользователей
 Route::get('/all_users', [AuthController::class, 'showAllUsers'])->name('all_users');
-
-
 
 // Ресурсные маршруты с переопределением update
 Route::resource('posts', PostController::class)->except(['update']);
