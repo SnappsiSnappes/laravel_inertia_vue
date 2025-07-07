@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+
 
 // Гости
 Route::middleware('guest')->group(function () {
@@ -37,30 +39,10 @@ Route::middleware('auth')->group(function () {
         return request()->user()->only('id', 'name', 'avatar', 'email');
     });
 
-    Route::post('/upload-image', function (Request $request) {
-        if (! $request->hasFile('image')) {
-            return response()->json(['error' => 'No file uploaded'], 400);
-        }
-        // Получаем загруженный файл
-        $file = $request->file('image');
 
-        $path = $request->file('image')->store('images', 'public');
-
-        // Получаем размеры изображения
-        $dimensions = getimagesize($file->getRealPath());
-        $width      = $dimensions[0];
-        $height     = $dimensions[1];
-
-        return response()->json([
-            'success' => 1,
-            'file'    => [
-                'url'    => Storage::disk('public')->url($path),
-                'width'  => $width,
-                'height' => $height,
-
-            ],
-        ]);
-    });
+    // Картинки в постах
+    Route::post('/upload-image', [ApiController::class,'StoreFile']);
+    Route::post('/delete-images', [ApiController::class, 'deleteImages']);
 
     Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
 });

@@ -62,11 +62,8 @@ onMounted(async () => {
                 {{ caption }}
             </p>
         </div>
-
-
     </div>
 </template>
-
 
 <style scoped>
 /* Обертка для изображения */

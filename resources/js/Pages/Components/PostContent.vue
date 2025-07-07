@@ -89,9 +89,6 @@ console.log(props.post.body);
                 <Image
                     :ImageUrl="block.data.file.url"
                     :caption="block.data.caption"
-                    :withBorder="block.data.withBorder"
-                    :stretched="block.data.stretched"
-                    :withBackground="block.data.withBackground"
                 />
             </div>
 

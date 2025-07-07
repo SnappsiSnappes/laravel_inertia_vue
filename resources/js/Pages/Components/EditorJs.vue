@@ -120,8 +120,10 @@ onMounted(() => {
 
         data: props.initialData,
     });
-});
 
+    
+
+});
 
 
 onUnmounted(() => {
