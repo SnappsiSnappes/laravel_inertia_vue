@@ -87,6 +87,12 @@ onMounted(() => {
             image: {
                 class: ImageTool,
                 config: {
+                    features: {
+                        border: false,
+                        caption: 'optional',
+                        stretch: false,
+                        withBackground:false
+                    },
                     endpoints: {
                         byFile: '/upload-image',
                     },
