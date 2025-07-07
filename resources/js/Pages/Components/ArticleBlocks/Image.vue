@@ -4,14 +4,9 @@ import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 
 const props = defineProps({
-    ImageUrl: String, // URL изображения
-    caption: String, // Подпись к изображению
-    withBorder: Boolean, // Добавить рамку?
-    stretched: Boolean, // Растянуть изображение?
-    withBackground: Boolean, // Добавить фон?
+    ImageUrl: String, // Массив изображений
+    caption: String, // Подпись галереи
 });
-
-console.log(props)
 
 // Реактивный массив для хранения данных изображений с размерами
 const imagesWithSizes = ref([]);
@@ -54,22 +49,24 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div :class="['image',]">
-        <!-- Галерея -->
+    <div class="image ">
+        <!-- image -->
         <div id="image" class="image-div">
             <a v-for="(file, index) in imagesWithSizes" :key="index" :href="file.url" :data-pswp-width="file.width"
                 :data-pswp-height="file.height" class="image-item" target="_blank" rel="noreferrer">
-                <img :src="file.url" :alt="caption || 'image'" class="image-image"
-                    :class="[withBorder ? 'with-border' : '', stretched ? 'stretched' : '', withBackground ? 'with-background' : '']" />
+                <img :src="file.url" :alt="caption || 'image image'" class="image-image" />
             </a>
+
             <!-- Подпись -->
-            <p v-if="caption" class="text-md text-black mt-2 text-center">
+            <p v-if="caption" class="text-sm text-black mt-2 text-center">
                 {{ caption }}
             </p>
         </div>
 
+
     </div>
 </template>
+
 
 <style scoped>
 /* Обертка для изображения */
@@ -80,6 +77,7 @@ onMounted(async () => {
 /* Контейнер для изображения */
 .image-div {
     @apply w-full max-w-[35rem] min-w-[20rem] mx-auto overflow-hidden rounded-lg shadow-md;
+    /* 800px = 50rem */
 }
 
 /* Ссылка с изображением */
@@ -92,18 +90,12 @@ onMounted(async () => {
     @apply w-full h-auto object-cover rounded-lg;
 }
 
-/* Добавляем рамку */
-.with-border {
-    @apply border-4 border-gray-300 rounded-lg;
+/* Добавляем стили для растянутых изображений */
+.image.stretched {
+    @apply w-full;
 }
 
-/* Растягиваем изображение */
-.stretched {
-    @apply w-full h-auto object-cover;
-}
-
-/* Добавляем фон */
-.with-background {
-    @apply bg-gray-100 p-4 rounded-lg;
+.image.stretched img {
+    @apply w-full h-auto rounded-md object-cover;
 }
 </style>
