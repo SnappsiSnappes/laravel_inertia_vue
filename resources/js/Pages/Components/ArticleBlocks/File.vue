@@ -1,8 +1,9 @@
 <script setup>
 import { computed } from 'vue';
-import { PaperClipIcon } from '@heroicons/vue/20/solid'; // Обновленная версия Heroicons
-import { DocumentIcon } from '@heroicons/vue/20/solid';
-import { PhotoIcon } from '@heroicons/vue/20/solid';
+import { PaperClipIcon } from '@heroicons/vue/24/outline'; 
+import { DocumentIcon } from '@heroicons/vue/24/outline'; 
+import { PhotoIcon } from '@heroicons/vue/24/outline';
+
 
 const props = defineProps({
     file: {
