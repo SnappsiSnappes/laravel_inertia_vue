@@ -26,3 +26,5 @@ prompt.md
 question.md
 /public/storage/images
 /public/storage/avatars
+/public/storage/files
+/storage/app/public/files
