@@ -41,7 +41,7 @@ const fileIcon = computed(() => {
 
 <template>
     <div
-        class="flex items-center p-4 border border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-200">
+        class="flex flex-row items-center justify-between p-4 border border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-200">
         <!-- Иконка файла -->
         <div class="mr-4">
             <component :is="fileIcon" class="size-[2rem]" />
@@ -50,7 +50,7 @@ const fileIcon = computed(() => {
         <!-- Информация о файле -->
         <div class="file-info flex-grow">
             <!-- Название файла -->
-            <div class="file-name text-sm font-medium text-gray-800 truncate">
+            <div class="file-name text-sm font-medium text-gray-800 break-all">
                 {{ file.name }}
             </div>
 

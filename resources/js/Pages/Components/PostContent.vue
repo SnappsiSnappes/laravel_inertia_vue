@@ -5,6 +5,7 @@ import Gallery from "./ArticleBlocks/Gallery.vue";
 import Image from "./ArticleBlocks/Image.vue";
 import List from "./ArticleBlocks/List.vue";
 import File from "./ArticleBlocks/File.vue";
+import PreviewHero from "./PreviewHero.vue";
 
 const props = defineProps({
     post: Object,
