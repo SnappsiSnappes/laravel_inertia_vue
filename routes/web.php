@@ -41,8 +41,12 @@ Route::middleware('auth')->group(function () {
 
 
     // Картинки в постах
-    Route::post('/upload-image', [ApiController::class,'StoreFile']);
+    Route::post('/upload-image', [ApiController::class,'StoreImage']);
     Route::post('/delete-images', [ApiController::class, 'deleteImages']);
+
+    // Файлы в постах
+    Route::post('/upload-file', [ApiController::class,'StoreFile']);
+
 
     Route::post('/posts/{postId}/react', [PostController::class, 'ChangeReaction'])->name('posts.react');
 });

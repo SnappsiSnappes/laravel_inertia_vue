@@ -107,7 +107,7 @@ onMounted(() => {
             attaches: {
                 class: AttachesTool,
                 config: {
-                    endpoint: '/upload-image',
+                    endpoint: '/upload-file',
                     additionalRequestHeaders: {
                         'X-CSRF-TOKEN': page.props.csrf_token,
                     },

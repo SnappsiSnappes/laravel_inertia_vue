@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
-    public function StoreFile(Request $request)
+    public function StoreImage(Request $request)
     {
         // Проверяем, был ли загружен файл
         if (!$request->hasFile('image')) {
@@ -83,4 +83,47 @@ class ApiController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function StoreFile(Request $request)
+{
+    // Проверяем, был ли загружен файл
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    // Получаем загруженный файл
+    $uploadedFile = $request->file('file');
+
+    // Определяем путь для сохранения файла
+    $filePath = "files/{$uploadedFile->getClientOriginalName()}";
+
+    // Проверяем, существует ли файл с таким именем
+    if (Storage::disk('public')->exists($filePath)) {
+        // Если файл уже существует, возвращаем его URL
+        return response()->json([
+            'success' => 1,
+            'file' => [
+                'url' => Storage::disk('public')->url($filePath),
+                'size' => $uploadedFile->getSize(),
+                'name' => $uploadedFile->getClientOriginalName(),
+                'extension' => $uploadedFile->getClientOriginalExtension(),
+            ],
+        ]);
+    }
+
+    // Сохраняем файл в папку `files`
+    Storage::disk('public')->put($filePath, file_get_contents($uploadedFile->getRealPath()));
+
+    // Возвращаем ответ в формате, ожидаемом Editor.js
+    return response()->json([
+        'success' => 1,
+        'file' => [
+            'url' => Storage::disk('public')->url($filePath),
+            'size' => $uploadedFile->getSize(), // Размер файла в байтах
+            'name' => $uploadedFile->getClientOriginalName(), // Имя файла
+            'extension' => $uploadedFile->getClientOriginalExtension(), // Расширение файла
+        ],
+    ]);
+}
+
 }
