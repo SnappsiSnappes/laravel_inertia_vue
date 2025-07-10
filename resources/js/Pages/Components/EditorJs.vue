@@ -144,6 +144,8 @@ const save = async () => {
 
 // используется родителем
 defineExpose({ save }); 
+
+console.log(props.initialData)
 </script>
 
 <template>

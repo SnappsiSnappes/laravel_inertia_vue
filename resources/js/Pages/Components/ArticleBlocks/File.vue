@@ -1,9 +1,10 @@
 <script setup>
 import { computed } from 'vue';
-import { PaperClipIcon } from '@heroicons/vue/24/outline'; 
-import { DocumentIcon } from '@heroicons/vue/24/outline'; 
+import { PaperClipIcon } from '@heroicons/vue/24/outline';
+import { DocumentIcon } from '@heroicons/vue/24/outline';
 import { PhotoIcon } from '@heroicons/vue/24/outline';
-
+import TorrentSvg from "../../../svg/TorrentSvg.vue"
+import { GifIcon } from '@heroicons/vue/16/solid';
 
 const props = defineProps({
     file: {
@@ -25,12 +26,24 @@ const fileIcon = computed(() => {
     const extension = props.file.extension.toLowerCase();
     switch (extension) {
         case 'jpg':
+            return PhotoIcon; // Иконка для изображений
+
         case 'jpeg':
+            return PhotoIcon; // Иконка для изображений
+
         case 'png':
+            return PhotoIcon; // Иконка для изображений
+
         case 'gif':
+            return GifIcon; // Иконка для изображений
+
         case 'bmp':
+            return PhotoIcon; // Иконка для изображений
+
         case 'webp':
             return PhotoIcon; // Иконка для изображений
+        case 'torrent':
+            return TorrentSvg;
         case 'pdf':
             return DocumentIcon; // Иконка для PDF
         default:
@@ -61,9 +74,7 @@ const fileIcon = computed(() => {
         </div>
 
         <!-- Кнопка скачивания -->
-        <a
-            :href="file.url"
-            target=""
+        <a :href="file.url" target="" download
             class="py-2 px-4 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 transition duration-200">
             Download
         </a>

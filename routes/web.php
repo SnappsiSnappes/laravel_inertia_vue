@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 
+
 // Гости
 Route::middleware('guest')->group(function () {
     // Регистрация
