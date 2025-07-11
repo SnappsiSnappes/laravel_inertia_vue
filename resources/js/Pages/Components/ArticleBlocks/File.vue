@@ -26,28 +26,28 @@ const fileIcon = computed(() => {
     const extension = props.file.extension.toLowerCase();
     switch (extension) {
         case 'jpg':
-            return PhotoIcon; // Иконка для изображений
+            return PhotoIcon;
 
         case 'jpeg':
-            return PhotoIcon; // Иконка для изображений
+            return PhotoIcon;
 
         case 'png':
-            return PhotoIcon; // Иконка для изображений
+            return PhotoIcon;
 
         case 'gif':
-            return GifIcon; // Иконка для изображений
+            return GifIcon;
 
         case 'bmp':
-            return PhotoIcon; // Иконка для изображений
+            return PhotoIcon;
 
         case 'webp':
-            return PhotoIcon; // Иконка для изображений
+            return PhotoIcon;
         case 'torrent':
             return TorrentSvg;
         case 'pdf':
-            return DocumentIcon; // Иконка для PDF
+            return DocumentIcon;
         default:
-            return PaperClipIcon; // Иконка по умолчанию
+            return PaperClipIcon;
     }
 });
 </script>

@@ -22,7 +22,7 @@ console.log(props.posts)
             <a :href="route('posts.create')" class="primary-btn w-1/5">Create New Post</a>
         </div>
 
-        <div v-for="post in posts.data" :key="post.id" class="mb-4 border-b pb-2">
+        <div v-for="post in posts.data" :key="post.id" class="mb-4  pb-2">
 
             <PostCard :post="post" :IsAdmin="IsAdmin" :authUser="authUser" />
 

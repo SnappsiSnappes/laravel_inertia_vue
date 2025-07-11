@@ -36,7 +36,7 @@ function clearFlashMessage() {
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col min-h-screen ">
         <header class="bg-zinc-700 text-white">
             <nav class="flex items-center justify-between p-4 max-w-screen-lg">
                 <div class="space-x-6">
@@ -79,8 +79,8 @@ function clearFlashMessage() {
             <slot />
         </main>
         <div class="pt-52">
-        <Footer />
-    </div>
+            <Footer />
+        </div>
     </div>
 
 </template>
