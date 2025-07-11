@@ -6,6 +6,7 @@ import Image from "./ArticleBlocks/Image.vue";
 import List from "./ArticleBlocks/List.vue";
 import File from "./ArticleBlocks/File.vue";
 import PreviewHero from "./PreviewHero.vue";
+import PostCard from './PostCard.vue';
 
 const props = defineProps({
     post: Object,
@@ -46,21 +47,16 @@ console.log(props.post.body);
         {{ props.post.body }}
     </p>
 
-    <p class="text-sm text-gray-500">
+    <p class="text-sm text-gray-500 ">
         {{ post.humanReadableDate }} by user
         <span class="underline">{{ post.user.email }}</span>
     </p>
 
     <div class="">
-        <h1 class="header-3">{{ post.title }}</h1>
 
-        <div class="PreviewDiv contrast my-10">
-            <p>{{ post.preview_text }}</p>
-            <div v-if="post.preview_image" class="image">
-                <img width="200px" :src="post.preview_image" />
-            </div>
+        <div class="py-5">
+            <PreviewHero :post="props.post" :IsAdmin="props.IsAdmin" :authUser="props.authUser" />
         </div>
-
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
             <!-- Параграф -->
             <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
@@ -107,7 +103,7 @@ console.log(props.post.body);
                 <!-- Заголовок (если есть) -->
                 <strong v-if="block.data.title" class="warning-title">{{
                     block.data.title
-                    }}</strong>
+                }}</strong>
 
                 <!-- Сообщение -->
                 <p class="warning-p">{{ block.data.message }}</p>

@@ -37,10 +37,6 @@
             </div>
         </div>
     </div>
-    <!-- Реакции -->
-    <div class="pt-1 pe-5 flex justify-center">
-        <ToggleReaction :PostId="post.id" />
-    </div>
 </template>
 
 <script setup>
@@ -80,7 +76,6 @@ const deletePost = (id) => {
 <style scoped>
 .post-card {
     max-width: 900px;
-    margin: 1rem auto;
 }
 
 /* Стиль для заголовка */
