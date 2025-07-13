@@ -2,66 +2,34 @@
 import { onMounted, ref } from "vue";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
+import ImageHelper from "../../../Objects/ImageHelper";
 
 const props = defineProps({
     files: Array, // Массив изображений
     caption: String, // Подпись галереи
 });
 
-// Реактивный массив для хранения данных изображений с размерами
-const imagesWithSizes = ref([]);
+let ConvertedFiles = ref([]);
 
-// если нет width то можно использовать это
-const loadImagesWithSizes = async () => {
-    if (!Array.isArray(props.files)) {
-        console.warn("Files prop is not an array. Using empty array as fallback.");
+onMounted(async () => {
+    if (!Array.isArray(props.files) || props.files.length === 0) {
+        console.warn("Files prop is not an array or is empty. Using empty array as fallback.");
         return;
     }
 
-    const loadedImages = await Promise.all(
+    // Преобразуем массив файлов
+    ConvertedFiles.value = await Promise.all(
         props.files.map(async (file) => {
-            const img = new Image();
-            img.src = file.url;
-
-            // Ждем загрузки изображения
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-            });
-
-            // Возвращаем данные изображения с реальными размерами
-            return {
-                ...file,
-                width: img.naturalWidth, // Реальная ширина изображения
-                height: img.naturalHeight, // Реальная высота изображения
-            };
+            if (!file.width || !file.height) {
+                // Если ширина или высота отсутствуют, получаем их через ImageHelper
+                const updatedFile = await ImageHelper.GetImageWithSizes(file.url);
+                return updatedFile;
+            }
+            return file; // Иначе возвращаем оригинальный файл
         })
     );
 
-    // Обновляем реактивный массив
-    imagesWithSizes.value = loadedImages;
-};
-
-
-onMounted(async () => {
-
-    if (!Array.isArray(props.files)) {
-        console.warn("Files prop is not an array. Using empty array as fallback.");
-        imagesWithSizes.value = [];
-        return;
-    }
-
-
-    // await loadImagesWithSizes();
-    // Используем данные напрямую из props.files
-    imagesWithSizes.value = props.files.map((file) => ({
-        ...file,
-         // Если ширина не указана, используем значение по умолчанию
-        width: file.width || 800,
-        // Если высота не указана, используем значение по умолчанию
-        height: file.height || 600, 
-    }));
-
+    // Инициализируем PhotoSwipeLightbox
     const lightbox = new PhotoSwipeLightbox({
         gallery: "#gallery",
         children: "a",
@@ -71,6 +39,8 @@ onMounted(async () => {
         wheelToZoom: true, // Разрешить зум колесиком мыши
     });
     lightbox.init();
+
+    console.log(ConvertedFiles.value); // Логируем результат для проверки
 });
 </script>
 
@@ -79,7 +49,7 @@ onMounted(async () => {
         <!-- Галерея -->
         <div id="gallery" class="gallery-main-div">
             <a
-                v-for="(file, index) in imagesWithSizes"
+                v-for="(file, index) in ConvertedFiles"
                 :key="index"
                 :href="file.url"
                 :data-pswp-width="file.width"
@@ -106,38 +76,29 @@ onMounted(async () => {
 <style scoped>
 .gallery-div {
     @apply w-full max-w-[50rem] mx-auto rounded-lg overflow-hidden;
-    /* Максимальная ширина контейнера (800px = 50rem) */
 }
 
 .gallery-main-div {
     display: flex;
     flex-wrap: wrap;
-    /* Разрешаем перенос строк */
     gap: 1rem;
-    /* Устанавливаем расстояние между элементами */
     padding: 1rem;
-    /* Добавляем внутренний отступ */
     justify-content: center;
-    /* Центрируем элементы */
 }
 
 .gallery-item {
     flex: 0 0 auto;
     width: calc(33% - 2rem);
-    /* Каждое изображение занимает ~33% ширины контейнера */
     height: 200px;
-    /* Фиксированная высота */
     position: relative;
     cursor: pointer;
 
     @media (max-width: 768px) {
         width: calc(50% - 1rem);
-        /* На маленьких экранах — 2 изображения в ряд */
     }
 
     @media (max-width: 480px) {
         width: 100%;
-        /* На очень маленьких экранах — 1 изображение в ряд */
     }
 
     .gallery-image {

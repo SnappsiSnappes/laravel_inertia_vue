@@ -2,67 +2,79 @@
 import { onMounted, ref } from "vue";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
+import ImageHelper from "../../../Objects/ImageHelper";
 
 const props = defineProps({
-    ImageUrl: String, // Массив изображений
-    caption: String, // Подпись галереи
-    Width:Number,
-    Height:Number,
+    ImageUrl: String, // URL изображения
+    caption: String, // Подпись к изображению
+    Width: Number,
+    Height: Number,
 });
-console.log(props)
 
-// Реактивный массив для хранения данных изображений с размерами
-const imagesWithSizes = ref([]);
+// Реактивная переменная для хранения данных изображения
+let ConvertedFile = ref({});
 
-// если нету width / height можно получить их тут
-const loadImageWithSizes = async () => {
-    const img = new Image();
-    img.src = props.ImageUrl;
-
-    // Ждем загрузки изображения
-    await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-    });
-
-    // Обновляем реактивный массив с данными изображения
-    imagesWithSizes.value = [
-        {
-            url: props.ImageUrl,
-            width: img.naturalWidth, // Реальная ширина изображения
-            height: img.naturalHeight, // Реальная высота изображения
-        },
-    ];
-};
-
-// Инициализация PhotoSwipe
 onMounted(async () => {
+    try {
+        // Проверяем, есть ли ширина и высота в props
+        if (!props.Width || !props.Height) {
+            // Получаем размеры изображения через ImageHelper
+            const fileWithSizes = await ImageHelper.GetImageWithSizes(props.ImageUrl);
+            ConvertedFile.value = {
+                ...fileWithSizes,
+                caption: props.caption,
+                ImageUrl: props.ImageUrl,
+            };
+        } else {
+            // Используем данные из props
+            ConvertedFile.value = {
+                width: props.Width,
+                height: props.Height,
+                caption: props.caption,
+                ImageUrl: props.ImageUrl,
+            };
+        }
 
-    const lightbox = new PhotoSwipeLightbox({
-        gallery: "#image",
-        children: "a",
-        pswpModule: () => import("photoswipe"),
-        showHideAnimationType: "zoom", // Анимация открытия/закрытия
-        closeOnScroll: false, // Не закрывать при прокрутке страницы
-        wheelToZoom: true, // Разрешить зум колесиком мыши
-    });
-    lightbox.init();
+        console.log(ConvertedFile.value); // Логируем результат для проверки
+
+        // Инициализация PhotoSwipeLightbox
+        const lightbox = new PhotoSwipeLightbox({
+            gallery: "#image",
+            children: "a",
+            pswpModule: () => import("photoswipe"),
+            showHideAnimationType: "zoom", // Анимация открытия/закрытия
+            closeOnScroll: false, // Не закрывать при прокрутке страницы
+            wheelToZoom: true, // Разрешить зум колесиком мыши
+        });
+        lightbox.init();
+    } catch (error) {
+        console.error("Error processing image:", error);
+    }
 });
-
 </script>
 
 <template>
-    <div class="image ">
-        <!-- image -->
+    <div class="image">
+        <!-- Изображение -->
         <div id="image" class="image-div">
-            <a :data-pswp-width="props.Width"
-                :data-pswp-height="props.Height" :href="props.ImageUrl" class="image-item" target="_blank" rel="noreferrer">
-                <img :src="props.ImageUrl" :alt="props.caption || 'image image'" class="image-image" />
+            <a
+                :data-pswp-width="ConvertedFile.width"
+                :data-pswp-height="ConvertedFile.height"
+                :href="ConvertedFile.ImageUrl"
+                class="image-item"
+                target="_blank"
+                rel="noreferrer"
+            >
+                <img
+                    :src="ConvertedFile.ImageUrl"
+                    :alt="ConvertedFile.caption || 'Image'"
+                    class="image-image"
+                />
             </a>
 
             <!-- Подпись -->
-            <p v-if="caption" class="text-sm text-black mt-2 text-center">
-                {{ caption }}
+            <p v-if="ConvertedFile.caption" class="text-sm text-black mt-2 text-center">
+                {{ ConvertedFile.caption }}
             </p>
         </div>
     </div>
@@ -77,7 +89,6 @@ onMounted(async () => {
 /* Контейнер для изображения */
 .image-div {
     @apply w-full max-w-[35rem] min-w-[20rem] mx-auto overflow-hidden rounded-lg shadow-md;
-    /* 800px = 50rem */
 }
 
 /* Ссылка с изображением */
