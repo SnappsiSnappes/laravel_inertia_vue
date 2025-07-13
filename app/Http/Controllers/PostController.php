@@ -62,29 +62,42 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(StorePostRequest $request)
-    {
-
-        // Валидация данных
-        $validated = $request->validated();
-
-        // Обработка загруженного изображения
-        if ($request->hasFile('preview_image')) {
-            $validated['preview_image'] = '/storage/' . $request->file('preview_image')->store('images', 'public');
-        }
-
-        // Создание поста с user_id
-        $post = Post::create([
-            'user_id' => Auth::id(), // Добавьте user_id
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-            'preview_text' => $validated['preview_text'],
-            'preview_image' => $validated['preview_image'] ?? null, // Если изображение не загружено, будет null
-        ]);
-
-        return redirect()->route('posts.show', $post)
-            ->with('message', ['message' => 'Пост создан', 'type' => 'success']);
-    }
+     public function store(StorePostRequest $request)
+     {
+         // Валидация данных
+         $validated = $request->validated();
+ 
+         // Обработка загруженного изображения
+         if ($request->hasFile('preview_image')) {
+             $file = $request->file('preview_image');
+ 
+             // Вычисляем хэш файла
+             $hash = hash_file('sha256', $file->getRealPath());
+ 
+             // Проверяем, существует ли файл с таким хэшом
+             $path = "images/{$hash}";
+             if (!Storage::disk('public')->exists($path)) {
+                 // Если файла нет, сохраняем его с именем, равным хэшу
+                 Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+             }
+ 
+             // Генерируем полный URL для изображения
+             $validated['preview_image'] = Storage::disk('public')->url($path);
+         }
+ 
+         // Создание поста с user_id
+         $post = Post::create([
+             'user_id' => Auth::id(),
+             'title' => $validated['title'],
+             'body' => $validated['body'],
+             'preview_text' => $validated['preview_text'],
+             'preview_image' => $validated['preview_image'] ?? null,
+         ]);
+ 
+         return redirect()->route('posts.show', $post)
+             ->with('message', ['message' => 'Пост создан', 'type' => 'success']);
+     }
+ 
 
     /**
      * Display the specified resource.
@@ -131,41 +144,55 @@ class PostController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update(UpdatePostRequest $request, Post $post)
-    {
-        // Проверяем, может ли пользователь обновлять пост
-        if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Валидация данных
-        $validated = $request->validated();
-
-
-        // Обработка загруженного изображения
-        if ($request->hasFile('preview_image')) {
-            // Удаляем старое изображение, если оно существует
-            if ($post->preview_image) {
-                Storage::disk('public')->delete($post->preview_image);
-            }
-            // Сохраняем новое изображение
-            $validated['preview_image'] =  '/storage/' . $request->file('preview_image')->store('images', 'public');
-        } else {
-            // Если файл не загружен, сохраняем старое значение
-            $validated['preview_image'] = $post->preview_image;
-        }
-
-        // Обновление поста
-        $post->update([
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-            'preview_text' => $validated['preview_text'],
-            'preview_image' => $validated['preview_image'],
-        ]);
-
-        // Перенаправление с сообщением об успехе
-        return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
-    }
+     public function update(UpdatePostRequest $request, Post $post)
+     {
+         // Проверяем, может ли пользователь обновлять пост
+         if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
+             abort(403, 'Unauthorized action.');
+         }
+ 
+         // Валидация данных
+         $validated = $request->validated();
+ 
+         // Обработка загруженного изображения
+         if ($request->hasFile('preview_image')) {
+             $file = $request->file('preview_image');
+ 
+             // Вычисляем хэш файла
+             $hash = hash_file('sha256', $file->getRealPath());
+             $path = "images/{$hash}";
+ 
+             // Удаляем старое изображение, если оно существует
+             if ($post->preview_image) {
+                 $oldFilePath = str_replace('/storage/', '', $post->preview_image);
+                 if (Storage::disk('public')->exists($oldFilePath)) {
+                     Storage::disk('public')->delete($oldFilePath);
+                 }
+             }
+ 
+             // Сохраняем новое изображение
+             if (!Storage::disk('public')->exists($path)) {
+                 Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+             }
+ 
+             // Генерируем полный URL для нового изображения
+             $validated['preview_image'] = Storage::disk('public')->url($path);
+         } else {
+             // Если файл не загружен, сохраняем старое значение
+             $validated['preview_image'] = $post->preview_image;
+         }
+ 
+         // Обновление поста
+         $post->update([
+             'title' => $validated['title'],
+             'body' => $validated['body'],
+             'preview_text' => $validated['preview_text'],
+             'preview_image' => $validated['preview_image'],
+         ]);
+ 
+         // Перенаправление с сообщением об успехе
+         return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
+     }
     /**
      * Remove the specified resource from storage.
      */

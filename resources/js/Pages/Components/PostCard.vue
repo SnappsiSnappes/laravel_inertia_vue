@@ -1,10 +1,72 @@
+<script setup>
+import { router } from "@inertiajs/vue3";
+import { onMounted, ref } from "vue";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
+import ImageHelper from "../../Objects/ImageHelper";
+
+const props = defineProps({
+    post: {
+        type: Object,
+        required: true,
+    },
+    IsAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    authUser: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
+console.log(props)
+
+// Реактивная переменная для хранения данных изображения
+let ConvertedFile = ref({});
+
+
+onMounted(async () => {
+
+    ConvertedFile.value = await ImageHelper.GetImageWithSizes(props.post.preview_image);
+    console.log(ConvertedFile.value); // Логируем результат для проверки
+
+
+    // Инициализация PhotoSwipeLightbox
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: "#image",
+        children: "a",
+        pswpModule: () => import("photoswipe"),
+        showHideAnimationType: "zoom", // Анимация открытия/закрытия
+        closeOnScroll: false, // Не закрывать при прокрутке страницы
+        wheelToZoom: true, // Разрешить зум колесиком мыши
+    });
+    lightbox.init();
+})
+
+// Метод для удаления поста
+const deletePost = (id) => {
+    if (confirm("Are you sure you want to delete this post?")) {
+        router.delete(route("posts.destroy", id), {
+            onSuccess: () => {
+                console.log("Post deleted successfully");
+            },
+            onError: () => {
+                console.error("Error deleting post");
+            },
+        });
+    }
+};
+</script>
 <template>
     <div class="post-card rounded-lg overflow-hidden transition duration-300">
         <!-- Основной контент -->
         <div class="relative pt-6 flex flex-col md:flex-row gap-1">
             <!-- Изображение превью -->
-            <div class="preview-image max-w-[23.25rem] h-64 w-full">
-                <img :src="post.preview_image" alt="Post Preview" class="w-full h-full object-cover rounded-lg" />
+            <div id="image" class="preview-image max-w-[23.25rem] h-64 w-full">
+                <a :data-pswp-width="ConvertedFile.width" :data-pswp-height="ConvertedFile.height"
+                    :href="ConvertedFile.url" class="image-item" target="_blank" rel="noreferrer">
+                    <img :src="ConvertedFile.url" :alt="ConvertedFile.caption || 'Image'"
+                        class="w-full h-full object-cover rounded-lg" /></a>
             </div>
 
             <!-- Текстовая часть -->
@@ -42,38 +104,7 @@
     </div>
 </template>
 
-<script setup>
-import { router } from "@inertiajs/vue3";
 
-const props = defineProps({
-    post: {
-        type: Object,
-        required: true,
-    },
-    IsAdmin: {
-        type: Boolean,
-        default: false,
-    },
-    authUser: {
-        type: Object,
-        default: () => ({}),
-    },
-});
-
-// Метод для удаления поста
-const deletePost = (id) => {
-    if (confirm("Are you sure you want to delete this post?")) {
-        router.delete(route("posts.destroy", id), {
-            onSuccess: () => {
-                console.log("Post deleted successfully");
-            },
-            onError: () => {
-                console.error("Error deleting post");
-            },
-        });
-    }
-};
-</script>
 
 <style scoped>
 .post-card {
@@ -117,12 +148,11 @@ const deletePost = (id) => {
 
 /* Стиль для контейнера справа */
 .content-container {
-    display: table-cell;
     vertical-align: top;
     background-color: rgb(8, 12, 15);
     min-height: 250px;
     width: 100%;
-    font-size: 16px;
+    font-size: 1rem;
     position: relative;
     border-radius: 0px 3px 3px 0px;
     padding: 15px 22px;
