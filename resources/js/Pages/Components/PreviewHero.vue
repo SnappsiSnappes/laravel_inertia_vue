@@ -1,30 +1,7 @@
-<template>
-    <div class="post-card rounded-lg overflow-hidden transition duration-300">
-        <!-- Основной контент -->
-        <div class="relative h-[400px] bg-gray-800 rounded-lg overflow-hidden">
-            <!-- Изображение превью (фон) -->
-            <div 
-                class="absolute top-0 left-0 w-full h-full bg-cover bg-center" 
-                :style="{ backgroundImage: `url(${post.preview_image})` }"
-            >
-                <!-- Затемнение снизу вверх -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-            </div>
-
-            <!-- Текстовая часть поверх изображения -->
-            <div class="absolute bottom-0 left-0 w-full p-6">
-                <!-- Заголовок -->
-                <h1 class="gradient-header mb-2">{{ post.title }}</h1>
-
-                <!-- Превью текст -->
-                <p class="cool-text">{{ post.preview_text }}</p>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
-import { router } from "@inertiajs/vue3";
+import { onMounted, ref } from "vue";
+import ImageHelper from "../../Objects/ImageHelper";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
 
 const props = defineProps({
     post: {
@@ -41,20 +18,61 @@ const props = defineProps({
     },
 });
 
-// Метод для удаления поста
-const deletePost = (id) => {
-    if (confirm("Are you sure you want to delete this post?")) {
-        router.delete(route("posts.destroy", id), {
-            onSuccess: () => {
-                console.log("Post deleted successfully");
-            },
-            onError: () => {
-                console.error("Error deleting post");
-            },
-        });
-    }
-};
+// Реактивная переменная для хранения данных изображения
+let ConvertedFile = ref({});
+
+onMounted(async () => {
+    // Получаем размеры изображения
+    ConvertedFile.value = await ImageHelper.GetImageWithSizes(props.post.preview_image);
+    console.log(ConvertedFile.value); // Логируем результат для проверки
+
+    // Инициализация PhotoSwipeLightbox
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: "#image",
+        children: "a",
+        pswpModule: () => import("photoswipe"),
+        showHideAnimationType: "zoom", // Анимация открытия/закрытия
+        closeOnScroll: false, // Не закрывать при прокрутке страницы
+        wheelToZoom: true, // Разрешить зум колесиком мыши
+    });
+    lightbox.init();
+});
 </script>
+
+<template>
+    <div class="post-card rounded-lg overflow-hidden transition duration-300">
+        <!-- Основной контент -->
+        <div class="relative h-[400px] bg-gray-800 rounded-lg overflow-hidden">
+            <!-- Изображение превью (фон) -->
+            <div
+                class="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+                :style="{ backgroundImage: `url(${post.preview_image})` }"
+            >
+                <!-- Затемнение снизу вверх -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Кликабельное изображение для PhotoSwipeLightbox -->
+            <div id="image" class="absolute inset-0 flex items-center justify-center">
+                <a
+                    :href="ConvertedFile.url"
+                    :data-pswp-width="ConvertedFile.width"
+                    :data-pswp-height="ConvertedFile.height"
+                    class="w-full h-full cursor-pointer"
+                ></a>
+            </div>
+
+            <!-- Текстовая часть поверх изображения -->
+            <div class="absolute bottom-0 left-0 w-full p-6">
+                <!-- Заголовок -->
+                <h1 class="gradient-header mb-2">{{ post.title }}</h1>
+
+                <!-- Превью текст -->
+                <p class="cool-text">{{ post.preview_text }}</p>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style scoped>
 .post-card {
