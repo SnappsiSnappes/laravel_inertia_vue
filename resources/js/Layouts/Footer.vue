@@ -2,7 +2,7 @@
 </script>
 <template>
     <!-- Footer -->
-    <footer class="bg-zinc-800 text-white py-12">
+    <footer class="bg-zinc-700 text-white py-12">
         <div class="max-w-screen-lg mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <!-- Левая часть: Копирайт -->
