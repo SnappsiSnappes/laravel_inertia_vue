@@ -62,7 +62,7 @@ const deletePost = (id) => {
         <!-- Основной контент -->
         <div class="relative pt-6 flex flex-col md:flex-row gap-1">
             <!-- Изображение превью -->
-            <div id="image" class="preview-image max-w-[23.25rem] h-64 w-full">
+            <div id="image" class="preview-image max-w-[22.25rem] h-64 w-full">
                 <a :data-pswp-width="ConvertedFile.width" :data-pswp-height="ConvertedFile.height"
                     :href="ConvertedFile.url" class="image-item" target="_blank" rel="noreferrer">
                     <img :src="ConvertedFile.url" :alt="ConvertedFile.caption || 'Image'"
