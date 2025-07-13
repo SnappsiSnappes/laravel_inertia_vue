@@ -11,7 +11,9 @@
             <div class="flex flex-col flex-grow justify-between content-container">
                 <!-- Заголовок и метаданные -->
                 <div class="text-content">
-                    <h1 class="cool-header mb-2">{{ post.title }}</h1>
+                    <a :href="route('posts.show', post.id)">
+                        <h1 class="cool-header mb-2">{{ post.title }}</h1>
+                    </a>
                     <!-- Добавлен preview_text -->
                     <p class="cool-text">{{ post.preview_text }}</p>
                 </div>
@@ -24,7 +26,8 @@
 
                         <!-- Проверка на авторизацию и владение постом -->
                         <template v-if="(authUser && authUser.id === post.user_id) || IsAdmin">
-                            <a :href="route('posts.edit', post.id)" class="text-yellow-500 hover:text-yellow-700">Edit</a>
+                            <a :href="route('posts.edit', post.id)"
+                                class="text-yellow-500 hover:text-yellow-700">Edit</a>
                             <form @submit.prevent="deletePost(post.id)">
                                 <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
                             </form>
@@ -41,7 +44,6 @@
 
 <script setup>
 import { router } from "@inertiajs/vue3";
-import ToggleReaction from "../Posts/ToggleReaction.vue";
 
 const props = defineProps({
     post: {
@@ -103,7 +105,8 @@ const deletePost = (id) => {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Показывает только 3 строки */
+    -webkit-line-clamp: 3;
+    /* Показывает только 3 строки */
     -webkit-box-orient: vertical;
     margin: 12px 0 0;
     padding: 0;

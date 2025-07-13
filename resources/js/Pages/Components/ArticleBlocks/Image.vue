@@ -6,12 +6,15 @@ import "photoswipe/style.css";
 const props = defineProps({
     ImageUrl: String, // Массив изображений
     caption: String, // Подпись галереи
+    Width:Number,
+    Height:Number,
 });
+console.log(props)
 
 // Реактивный массив для хранения данных изображений с размерами
 const imagesWithSizes = ref([]);
 
-// Функция для загрузки изображения и получения его размеров
+// если нету width / height можно получить их тут
 const loadImageWithSizes = async () => {
     const img = new Image();
     img.src = props.ImageUrl;
@@ -34,7 +37,6 @@ const loadImageWithSizes = async () => {
 
 // Инициализация PhotoSwipe
 onMounted(async () => {
-    await loadImageWithSizes();
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: "#image",
@@ -46,15 +48,16 @@ onMounted(async () => {
     });
     lightbox.init();
 });
+
 </script>
 
 <template>
     <div class="image ">
         <!-- image -->
         <div id="image" class="image-div">
-            <a v-for="(file, index) in imagesWithSizes" :key="index" :href="file.url" :data-pswp-width="file.width"
-                :data-pswp-height="file.height" class="image-item" target="_blank" rel="noreferrer">
-                <img :src="file.url" :alt="caption || 'image image'" class="image-image" />
+            <a :data-pswp-width="props.Width"
+                :data-pswp-height="props.Height" :href="props.ImageUrl" class="image-item" target="_blank" rel="noreferrer">
+                <img :src="props.ImageUrl" :alt="props.caption || 'image image'" class="image-image" />
             </a>
 
             <!-- Подпись -->

@@ -78,7 +78,7 @@ console.log(props.post.body);
 
             <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image">
-                <Image :ImageUrl="block.data.file.url" :caption="block.data.caption" />
+                <Image :ImageUrl="block.data.file.url" :caption="block.data.caption" :Width="block.data.file.width" :Height="block.data.file.height" />
             </div>
 
             <!-- Галерея -->
