@@ -9,6 +9,9 @@ const props = defineProps({
     post: Object,
 });
 
+// Флаг для удаления preview_image
+const deletePreviewImage = ref(false);
+
 // Инициализация формы
 const form = useForm({
     title: props.post.title || '',
@@ -16,11 +19,21 @@ const form = useForm({
     preview_text: props.post.preview_text || '',
     preview_image: null, // Файл изображения
     preview_image_url: props.post.preview_image || null, // URL для предпросмотра
+    delete_preview_image: false, // Флаг удаления изображения
 });
 
 // Обработка сохранения
 const handleSave = async (editorData) => {
     form.body = JSON.stringify(editorData);
+
+    // Если флаг удаления установлен, очищаем preview_image и обновляем флаг
+    if (deletePreviewImage.value) {
+        form.preview_image = null;
+        form.preview_image_url = null;
+        form.delete_preview_image = true; // Устанавливаем флаг удаления
+    } else {
+        form.delete_preview_image = false; // Сбрасываем флаг удаления
+    }
 
     // Логируем данные перед отправкой
     console.log('Form data before submission:', form);
@@ -49,7 +62,15 @@ const AddFile = (e) => {
     if (file) {
         form.preview_image = file; // Добавляем файл в форму
         form.preview_image_url = URL.createObjectURL(file); // Создаем URL для предпросмотра
+        deletePreviewImage.value = false; // Сбрасываем флаг удаления
     }
+};
+
+// Удаление preview_image
+const removePreviewImage = () => {
+    deletePreviewImage.value = true; // Устанавливаем флаг удаления
+    form.preview_image = null; // Очищаем файл
+    form.preview_image_url = null; // Очищаем URL
 };
 </script>
 
@@ -64,8 +85,18 @@ const AddFile = (e) => {
 
             <!-- Поле для загрузки изображения -->
             <label>Preview Image</label>
-            <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28" />
-            <input type="file" @input="AddFile" name="preview_image" class="mt-2" />
+            <div class="flex items-center space-x-2">
+                <img v-if="form.preview_image_url" :src="form.preview_image_url" class="object-cover w-28 h-28" />
+                <input type="file" @input="AddFile" name="preview_image" class="mt-2" />
+                <button
+                    v-if="form.preview_image_url"
+                    type="button"
+                    @click="removePreviewImage"
+                    class="text-red-500 hover:text-red-700"
+                >
+                    Remove
+                </button>
+            </div>
             <small v-if="form.errors.preview_image" class="error">{{ form.errors.preview_image }}</small>
 
             <!-- Поле для заголовка -->

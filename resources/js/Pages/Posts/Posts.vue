@@ -1,6 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import PostCard from '../Components/PostCard.vue';
+import PostCardNoImage from '../Components/PostCardNoImage.vue';
 import ToggleReaction from './ToggleReaction.vue';
 
 const props = defineProps({
@@ -25,7 +26,9 @@ console.log(props.posts)
 
         <div v-for="post in posts.data" :key="post.id" class="mb-4  pb-2">
 
-            <PostCard :post="post" :IsAdmin="IsAdmin" :authUser="authUser" />
+            <PostCard v-if="post.preview_image" :post="post" :IsAdmin="IsAdmin" :authUser="authUser" />
+            <PostCardNoImage v-if="!post.preview_image" :post="post" :IsAdmin="IsAdmin" :authUser="authUser" />
+
             <!-- Реакции -->
             <div class="pt-1 flex justify-center">
                 <ToggleReaction :PostId="post.id" />

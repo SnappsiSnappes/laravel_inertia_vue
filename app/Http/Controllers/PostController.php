@@ -140,59 +140,66 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-
-     public function update(UpdatePostRequest $request, Post $post)
-     {
-         // Проверяем, может ли пользователь обновлять пост
-         if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
-             abort(403, 'Unauthorized action.');
-         }
- 
-         // Валидация данных
-         $validated = $request->validated();
- 
-         // Обработка загруженного изображения
-         if ($request->hasFile('preview_image')) {
-             $file = $request->file('preview_image');
- 
-             // Вычисляем хэш файла
-             $hash = hash_file('sha256', $file->getRealPath());
-             $path = "images/{$hash}";
- 
-             // Удаляем старое изображение, если оно существует
-             if ($post->preview_image) {
-                 $oldFilePath = str_replace('/storage/', '', $post->preview_image);
-                 if (Storage::disk('public')->exists($oldFilePath)) {
-                     Storage::disk('public')->delete($oldFilePath);
-                 }
-             }
- 
-             // Сохраняем новое изображение
-             if (!Storage::disk('public')->exists($path)) {
-                 Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
-             }
- 
-             // Генерируем полный URL для нового изображения
-             $validated['preview_image'] = Storage::disk('public')->url($path);
-         } else {
-             // Если файл не загружен, сохраняем старое значение
-             $validated['preview_image'] = $post->preview_image;
-         }
- 
-         // Обновление поста
-         $post->update([
-             'title' => $validated['title'],
-             'body' => $validated['body'],
-             'preview_text' => $validated['preview_text'],
-             'preview_image' => $validated['preview_image'],
-         ]);
- 
-         // Перенаправление с сообщением об успехе
-         return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
-     }
+    public function update(UpdatePostRequest $request, Post $post)
+    {
+        // Проверяем, может ли пользователь обновлять пост
+        if (!Auth::user()->can('isAdmin', User::class) && $post->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+    
+        // Валидация данных
+        $validated = $request->validated();
+    
+        // Обработка загруженного изображения
+        if ($request->hasFile('preview_image')) {
+            $file = $request->file('preview_image');
+    
+            // Вычисляем хэш файла
+            $hash = hash_file('sha256', $file->getRealPath());
+            $path = "images/{$hash}";
+    
+            // Удаляем старое изображение, если оно существует
+            if ($post->preview_image) {
+                $oldFilePath = str_replace('/storage/', '', $post->preview_image);
+                if (Storage::disk('public')->exists($oldFilePath)) {
+                    Storage::disk('public')->delete($oldFilePath);
+                }
+            }
+    
+            // Сохраняем новое изображение
+            if (!Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->put($path, file_get_contents($file->getRealPath()));
+            }
+    
+            // Генерируем полный URL для нового изображения
+            $validated['preview_image'] = Storage::disk('public')->url($path);
+        } elseif ($request->boolean('delete_preview_image')) {
+            // Если нужно удалить изображение
+            if ($post->preview_image) {
+                $oldFilePath = str_replace('/storage/', '', $post->preview_image);
+                if (Storage::disk('public')->exists($oldFilePath)) {
+                    Storage::disk('public')->delete($oldFilePath);
+                }
+            }
+    
+            // Устанавливаем preview_image в null
+            $validated['preview_image'] = null;
+        } else {
+            // Если файл не загружен и флаг удаления не установлен, сохраняем старое значение
+            $validated['preview_image'] = $post->preview_image;
+        }
+    
+        // Обновление поста
+        $post->update([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+            'preview_text' => $validated['preview_text'],
+            'preview_image' => $validated['preview_image'],
+        ]);
+    
+        // Перенаправление с сообщением об успехе
+        return redirect()->route('posts.show', $post)->with('message', ['message' => 'Пост обновлен', 'type' => 'success']);
+    }
     /**
      * Remove the specified resource from storage.
      */
