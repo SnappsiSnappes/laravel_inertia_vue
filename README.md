@@ -16,7 +16,7 @@ mv env .env
 composer install
 npm install
 php artisan key:generate
-rm public/storage
+rm -rf public/storage
 php artisan storage:link
 mkdir -p storage/app/public
 php artisan migrate
