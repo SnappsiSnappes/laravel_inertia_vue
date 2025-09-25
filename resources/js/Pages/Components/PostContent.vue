@@ -7,6 +7,7 @@ import List from "./ArticleBlocks/List.vue";
 import File from "./ArticleBlocks/File.vue";
 import PreviewHero from "./PreviewHero.vue";
 import PostCard from './PostCard.vue';
+import Code from "./ArticleBlocks/Code.vue";
 
 const props = defineProps({
     post: Object,
@@ -67,9 +68,9 @@ console.log(props.post.body);
             </div>
 
             <!-- Блок кода -->
-            <pre v-else-if="block.type === 'code'" class="code-block">
-                <code>{{ block.data.code }}</code>
-            </pre>
+            <div v-else-if="block.type === 'code'" class="">
+                <Code :blockData="block.data" />
+            </div>
 
             <!-- Списки -->
             <div v-else-if="block.type === 'list'" class="list">
@@ -78,7 +79,8 @@ console.log(props.post.body);
 
             <!-- Изображения -->
             <div v-else-if="block.type === 'image'" class="image">
-                <Image :ImageUrl="block.data.file.url" :caption="block.data.caption" :Width="block.data.file.width" :Height="block.data.file.height" />
+                <Image :ImageUrl="block.data.file.url" :caption="block.data.caption" :Width="block.data.file.width"
+                    :Height="block.data.file.height" />
             </div>
 
             <!-- Галерея -->
@@ -103,7 +105,7 @@ console.log(props.post.body);
                 <!-- Заголовок (если есть) -->
                 <strong v-if="block.data.title" class="warning-title">{{
                     block.data.title
-                }}</strong>
+                    }}</strong>
 
                 <!-- Сообщение -->
                 <p class="warning-p">{{ block.data.message }}</p>

@@ -28,3 +28,5 @@ question.md
 /public/storage/avatars
 /public/storage/files
 /storage/app/public/files
+public/storage
+secret.md

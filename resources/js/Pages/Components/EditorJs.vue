@@ -5,7 +5,10 @@ import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Quote from '@editorjs/quote';
 import ImageTool from '@editorjs/image';
-import CodeTool from '@editorjs/code';
+
+// import CodeTool from '@editorjs/code';
+import CustomCodeTool from '../../EditorJsTools/CustomCodeTool';
+
 import Table from '@editorjs/table';
 import Delimiter from '@editorjs/delimiter';
 import Embed from '@editorjs/embed';
@@ -65,7 +68,8 @@ onMounted(() => {
             },
             warning: Warning,
 
-            code: CodeTool,
+            code: CustomCodeTool, 
+
 
             underline: Underline,
 
@@ -91,7 +95,7 @@ onMounted(() => {
                         border: false,
                         caption: 'optional',
                         stretch: false,
-                        withBackground:false
+                        withBackground: false
                     },
                     endpoints: {
                         byFile: '/upload-image',
@@ -121,7 +125,7 @@ onMounted(() => {
         data: props.initialData,
     });
 
-    
+
 
 });
 
@@ -143,7 +147,7 @@ const save = async () => {
 };
 
 // используется родителем
-defineExpose({ save }); 
+defineExpose({ save });
 
 console.log(props.initialData)
 </script>

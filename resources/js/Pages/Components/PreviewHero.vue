@@ -23,19 +23,21 @@ let ConvertedFile = ref({});
 
 onMounted(async () => {
     // Получаем размеры изображения
-    ConvertedFile.value = await ImageHelper.GetImageWithSizes(props.post.preview_image);
-    console.log(ConvertedFile.value); // Логируем результат для проверки
-
-    // Инициализация PhotoSwipeLightbox
-    const lightbox = new PhotoSwipeLightbox({
-        gallery: "#image",
-        children: "a",
-        pswpModule: () => import("photoswipe"),
-        showHideAnimationType: "zoom", // Анимация открытия/закрытия
-        closeOnScroll: false, // Не закрывать при прокрутке страницы
-        wheelToZoom: true, // Разрешить зум колесиком мыши
-    });
-    lightbox.init();
+    if(props.post.preview_image){
+        ConvertedFile.value = await ImageHelper.GetImageWithSizes(props.post.preview_image);
+        console.log(ConvertedFile.value); // Логируем результат для проверки
+    
+        // Инициализация PhotoSwipeLightbox
+        const lightbox = new PhotoSwipeLightbox({
+            gallery: "#image",
+            children: "a",
+            pswpModule: () => import("photoswipe"),
+            showHideAnimationType: "zoom", // Анимация открытия/закрытия
+            closeOnScroll: false, // Не закрывать при прокрутке страницы
+            wheelToZoom: true, // Разрешить зум колесиком мыши
+        });
+        lightbox.init();
+    }
 });
 </script>
 
