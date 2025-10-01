@@ -75,8 +75,8 @@ function renderCode() {
 
 <template>
   <div class="code-container my-6">
-    <div class="code-header px-4 py-2 bg-gray-800 rounded-t-lg">
-      <span class="text-xs font-medium text-gray-300">
+    <div class="code-header px-4 py-2 bg-[#34352f]  rounded-t-lg">
+      <span class="text-xs font-medium text-gray-300 font-jetbrains">
         {{ languageLabel !== 'Text' ? languageLabel : 'Code' }}
       </span>
     </div>

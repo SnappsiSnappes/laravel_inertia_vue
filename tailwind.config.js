@@ -6,7 +6,11 @@ export default {
     "./resources/**/*.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'jetbrains': ['"JetBrains Mono"', 'monospace'], // ← регистрируем как jetbrains
+      },
+    },
   },
   plugins: [
   ],
