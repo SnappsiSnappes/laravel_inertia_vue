@@ -111,18 +111,9 @@ const cleanupAnnotationListeners = () => {
 };
 
 onMounted(async () => {
-    await nextTick();
-    const annotations = document.querySelectorAll(".cdx-annotation");
-    annotations.forEach((el, index) => {
-        const title = el.getAttribute("data-title") || "";
-        const desc = el.getAttribute("data-text") || "";
-        el.addEventListener("mouseenter", (e) => {
-            showPopover(e, title, desc);
-        });
-        el.addEventListener("mouseleave", () => {
-            hidePopover();
-        });
-    });
+  await nextTick();
+  attachAnnotationListeners(); // ✅ Используем вашу функцию!
+
 });
 
 onUnmounted(() => {
@@ -138,7 +129,7 @@ onUnmounted(() => {
 
 
 
-    <div class="w-full">
+    <div id="post-content" class="w-full">
 
         <div class="py-5">
             <PreviewHero :post="props.post" :IsAdmin="props.IsAdmin" :authUser="props.authUser" />
