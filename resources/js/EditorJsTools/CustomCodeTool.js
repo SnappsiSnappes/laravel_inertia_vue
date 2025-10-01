@@ -1,6 +1,5 @@
 // resources/js/EditroJsTools/CustomCodeTool.js
 // (Note: fix typo in folder name → "EditorJsTools")
-
 export default class CustomCodeTool {
     static get toolbox() {
         return {

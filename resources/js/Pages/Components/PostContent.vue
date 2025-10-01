@@ -21,8 +21,22 @@ const purifyConfig = {
     ALLOWED_ATTR: ['class', 'data-title', 'data-text'], // явно разрешаем нужные атрибуты
 };
 
+
 const sanitizeHtml = (html) => {
-    return DOMPurify.sanitize(html || "", purifyConfig);
+    const clean = DOMPurify.sanitize(html || "", {
+        ALLOW_DATA_ATTR: true,
+        ALLOWED_ATTR: ['class', 'data-color', 'data-title', 'data-text'],
+    });
+
+    const temp = document.createElement('div');
+    temp.innerHTML = clean;
+
+    // Применяем цвета
+    temp.querySelectorAll('.cdx-colored-text[data-color]').forEach(el => {
+        el.style.color = el.getAttribute('data-color');
+    });
+
+    return temp.innerHTML;
 };
 
 const parsedBody = computed(() => {
@@ -116,6 +130,8 @@ onMounted(async () => {
 
 });
 
+
+
 onUnmounted(() => {
     cleanupAnnotationListeners();
 });
@@ -141,7 +157,7 @@ onUnmounted(() => {
 
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
             <!-- Параграф -->
-      <div v-if="block.type === 'paragraph'" class="paragraph" v-html="sanitizeHtml(block.data.text)"></div>
+      <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
 
             <!-- Заголовки -->
             <div v-else-if="block.type === 'header'" :class="`header-${block.data.level}`">

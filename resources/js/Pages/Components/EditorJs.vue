@@ -15,7 +15,6 @@ import Embed from '@editorjs/embed';
 import axios from 'axios';
 import paragraph from 'editorjs-paragraph-with-alignment';
 import { usePage } from '@inertiajs/vue3';
-import ColorPicker from 'editorjs-color-picker';
 import Underline from '@editorjs/underline';
 import Warning from '@editorjs/warning';
 import Marker from '@editorjs/marker';
@@ -24,6 +23,7 @@ import Annotation from 'editorjs-annotation';
 import AttachesTool from '@editorjs/attaches';
 import Sortable from 'sortablejs';
 import ImageGallery from '@kiberpro/editorjs-gallery';
+import ColorPicker from 'editorjs-color-picker';
 
 
 // Доступ к данным страницы
@@ -65,22 +65,22 @@ onMounted(() => {
                 class: Marker,
 
             },
+
+
             warning: Warning,
 
-            code: CustomCodeTool, 
+            code: CustomCodeTool,
 
 
             underline: Underline,
 
-            ColorPicker: {
-                class: ColorPicker,
-            },
 
 
             paragraph: {
                 inlineToolbar: true,
                 class: paragraph,
             },
+            
             annotation: Annotation,
 
             header: Header,
