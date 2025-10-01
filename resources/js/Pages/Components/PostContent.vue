@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, nextTick, ref, onUnmounted } from "vue";
 import ToggleReaction from "../Posts/ToggleReaction.vue";
 import Gallery from "./ArticleBlocks/Gallery.vue";
 import Image from "./ArticleBlocks/Image.vue";
@@ -7,14 +7,24 @@ import List from "./ArticleBlocks/List.vue";
 import File from "./ArticleBlocks/File.vue";
 import PreviewHero from "./PreviewHero.vue";
 import Code from "./ArticleBlocks/Code.vue";
+import DOMPurify from 'dompurify';
 
 const props = defineProps({
     post: Object,
-    IsAdmin: Boolean,
+    IsAdmin: Boolean, // ← исправлено на camelCase
     authUser: Object,
 });
 
-// Разбор JSON-данных
+// ✅ Настройка DOMPurify: разрешаем data-* атрибуты и классы
+const purifyConfig = {
+    ALLOW_DATA_ATTR: true, // разрешает data-title, data-text и др.
+    ALLOWED_ATTR: ['class', 'data-title', 'data-text'], // явно разрешаем нужные атрибуты
+};
+
+const sanitizeHtml = (html) => {
+    return DOMPurify.sanitize(html || "", purifyConfig);
+};
+
 const parsedBody = computed(() => {
     try {
         return JSON.parse(props.post.body);
@@ -24,21 +34,100 @@ const parsedBody = computed(() => {
     }
 });
 
-// Определение классов выравнивания
 const alignmentClass = (block) => {
-    switch (block.data.alignment) {
-        case "center":
-            return "text-center";
-        case "right":
-            return "text-right";
-        default:
-            return "text-left";
+    switch (block.data?.alignment) {
+        case "center": return "text-center";
+        case "right": return "text-right";
+        default: return "text-left";
     }
 };
 
-onMounted(() => { });
-console.log(props.post);
-console.log(props.post.body);
+// Popover state
+const popover = ref({
+    visible: false,
+    title: "",
+    description: "",
+    x: 0,
+    y: 0,
+});
+
+const showPopover = (e, title, description) => {
+    const x = e.clientX + 10;
+    const y = e.clientY - 90;
+
+    // Защита от выхода за границы экрана
+    const popoverWidth = 300;
+    const popoverHeight = 100;
+    const maxX = window.innerWidth - popoverWidth - 10;
+    const maxY = window.innerHeight - popoverHeight - 10;
+
+    const safeX = Math.max(5, Math.min(x, maxX));
+    const safeY = Math.max(5, Math.min(y, maxY));
+
+    popover.value = {
+        visible: true,
+        title: title || "Аннотация",
+        description: description || "",
+        x: safeX,
+        y: safeY,
+    };
+};
+
+const hidePopover = () => {
+    popover.value.visible = false;
+};
+
+// 🧠 Умная обработка аннотаций
+let annotationHandlers = [];
+
+const attachAnnotationListeners = () => {
+    // Находим все аннотации ВНУТРИ контейнера поста (а не во всём document!)
+    const container = document.getElementById('post-content');
+    if (!container) return;
+
+    const annotations = container.querySelectorAll(".cdx-annotation");
+    annotationHandlers = []; // сброс при повторном вызове
+
+    annotations.forEach(el => {
+        const title = el.getAttribute("data-title") || "";
+        const desc = el.getAttribute("data-text") || "";
+
+        const enter = (e) => showPopover(e, title, desc);
+        const leave = () => hidePopover();
+
+        el.addEventListener("mouseenter", enter);
+        el.addEventListener("mouseleave", leave);
+
+        annotationHandlers.push({ el, enter, leave });
+    });
+};
+
+const cleanupAnnotationListeners = () => {
+    annotationHandlers.forEach(({ el, enter, leave }) => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+    });
+    annotationHandlers = [];
+};
+
+onMounted(async () => {
+    await nextTick();
+    const annotations = document.querySelectorAll(".cdx-annotation");
+    annotations.forEach((el, index) => {
+        const title = el.getAttribute("data-title") || "";
+        const desc = el.getAttribute("data-text") || "";
+        el.addEventListener("mouseenter", (e) => {
+            showPopover(e, title, desc);
+        });
+        el.addEventListener("mouseleave", () => {
+            hidePopover();
+        });
+    });
+});
+
+onUnmounted(() => {
+    cleanupAnnotationListeners();
+});
 </script>
 
 <template>
@@ -61,7 +150,7 @@ console.log(props.post.body);
 
         <div v-for="(block, index) in parsedBody.blocks" :key="index" :class="['editor-block', alignmentClass(block)]">
             <!-- Параграф -->
-            <div v-if="block.type === 'paragraph'" class="paragraph" v-html="block.data.text"></div>
+      <div v-if="block.type === 'paragraph'" class="paragraph" v-html="sanitizeHtml(block.data.text)"></div>
 
             <!-- Заголовки -->
             <div v-else-if="block.type === 'header'" :class="`header-${block.data.level}`">
@@ -106,7 +195,7 @@ console.log(props.post.body);
                 <!-- Заголовок (если есть) -->
                 <strong v-if="block.data.title" class="warning-title">{{
                     block.data.title
-                }}</strong>
+                    }}</strong>
 
                 <!-- Сообщение -->
                 <p class="warning-p">{{ block.data.message }}</p>
@@ -158,4 +247,25 @@ console.log(props.post.body);
     </div>
 
     <ToggleReaction :PostId="props.post.id" />
+
+
+  <!-- Popover -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition-opacity duration-200"
+      leave-active-class="transition-opacity duration-150"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="popover.visible"
+        class="fixed z-[9999] bg-white p-3 rounded-lg shadow-lg border border-gray-200 max-w-xs text-sm text-gray-800"
+        :style="{ left: popover.x + 'px', top: popover.y + 'px' }"
+      >
+        <h4 class="font-semibold text-gray-900">{{ popover.title }}</h4>
+        <p class="mt-1 text-gray-600">{{ popover.description }}</p>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
+

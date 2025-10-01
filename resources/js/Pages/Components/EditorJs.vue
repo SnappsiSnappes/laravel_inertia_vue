@@ -15,7 +15,6 @@ import Embed from '@editorjs/embed';
 import axios from 'axios';
 import paragraph from 'editorjs-paragraph-with-alignment';
 import { usePage } from '@inertiajs/vue3';
-import InlineCode from '@editorjs/inline-code';
 import ColorPicker from 'editorjs-color-picker';
 import Underline from '@editorjs/underline';
 import Warning from '@editorjs/warning';
@@ -77,7 +76,6 @@ onMounted(() => {
                 class: ColorPicker,
             },
 
-            inlineCode: InlineCode,
 
             paragraph: {
                 inlineToolbar: true,
