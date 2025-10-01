@@ -27,17 +27,20 @@ hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('sql', sql);
 hljs.registerLanguage('yaml', yaml);
 
-// Статический импорт темы (лучше, чем динамический в onMounted)
-import 'highlight.js/styles/monokai.css'; 
-//gradient-light.css rofl
-//monokai.css 10/10
-//#! all fonts https://github.com/highlightjs/highlight.js/tree/main/src/styles
+// Heroicons
+import { ClipboardIcon } from '@heroicons/vue/24/outline';
+import { CheckIcon } from '@heroicons/vue/24/solid';
+
+// Статический импорт темы
+import 'highlight.js/styles/monokai.css';
+
 const props = defineProps({
   blockData: { type: Object, required: true }
 });
 
 const highlightedCode = ref('');
 const languageLabel = ref('');
+const copied = ref(false);
 
 onMounted(() => {
   renderCode();
@@ -71,14 +74,40 @@ function renderCode() {
 
   highlightedCode.value = result.value;
 }
+
+async function copyToClipboard() {
+  try {
+    await navigator.clipboard.writeText(props.blockData.code);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1500);
+  } catch (err) {
+    console.error('Failed to copy:', err);
+  }
+}
 </script>
 
 <template>
   <div class="code-container my-6">
-    <div class="code-header px-4 py-2 bg-[#34352f]  rounded-t-lg">
+    <div class="code-header flex justify-between items-center px-4 py-2 bg-[#34352f] rounded-t-lg">
       <span class="text-xs font-medium text-gray-300 font-jetbrains">
         {{ languageLabel !== 'Text' ? languageLabel : 'Code' }}
       </span>
+
+      <!-- Кнопка копирования с Heroicons -->
+      <button
+        @click="copyToClipboard"
+        class="text-gray-400 hover:text-gray-200 transition-colors focus:outline-none"
+        :disabled="copied"
+        aria-label="Copy code to clipboard"
+      >
+        <component
+          :is="copied ? CheckIcon : ClipboardIcon"
+          class="h-4 w-4"
+          :class="{ 'text-green-400': copied }"
+        />
+      </button>
     </div>
     <pre class="hljs !my-0 rounded-b-lg"><code v-html="highlightedCode"></code></pre>
   </div>
@@ -91,11 +120,10 @@ function renderCode() {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
 }
 
-/* Важно: не переопределяем padding, font-size и т.д. */
 .hljs {
   margin: 0;
-  padding: 1.25rem !important; /* если нужно — но осторожно! */
-  font-family: 'JetBrains Mono';
+  padding: 1.25rem !important;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.875rem;
   line-height: 1.6;
   overflow-x: auto;
