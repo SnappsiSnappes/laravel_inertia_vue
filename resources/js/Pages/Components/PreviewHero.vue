@@ -42,7 +42,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="post-card rounded-lg overflow-hidden transition duration-300">
+    <div class=" rounded-lg overflow-hidden transition duration-300">
         <!-- Основной контент -->
         <div class="relative h-[400px] bg-gray-800 rounded-lg overflow-hidden">
             <!-- Изображение превью (фон) -->

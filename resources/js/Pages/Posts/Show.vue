@@ -31,7 +31,6 @@ const props = defineProps({
         <!-- Используем компонент PostContent -->
         <PostContent :post="post" :IsAdmin="IsAdmin" :authUser="authUser" />
 
-
     </div>
 </template>
 

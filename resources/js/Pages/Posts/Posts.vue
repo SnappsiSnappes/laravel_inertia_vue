@@ -20,7 +20,7 @@ console.log(props.posts)
     <div class="w-2/4 mx-auto">
         <h1>All Posts</h1>
 
-        <div class="mt-4" v-if="authUser">
+        <div class="mt-4 py-6" v-if="authUser">
             <a :href="route('posts.create')" class="primary-btn w-1/5">Create New Post</a>
         </div>
 
